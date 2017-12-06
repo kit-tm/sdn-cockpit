@@ -1,0 +1,10 @@
+*.pyc
+*.py~
+*.sh~
+*.log
+.vagrant
+sync/cwd
+sync/local/tmp
+sync/tmp*
+sync/local/venv
+
