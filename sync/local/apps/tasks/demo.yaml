@@ -1,0 +1,14 @@
+task:
+  name: "Task 1.2"
+  description: "Use this first task to make yourself familiar with the
+  framework. The window in the top left shows the controller
+  application (demo.py) that is automatically reloaded as soon
+  as you save the application file in your editor, e.g., by
+  pressing CTRL+C. The screen below this window is a Mininet
+  terminal that can be used, for example, to ping between the
+  different networks. Currently, there is a simple topology with one
+  switch and four networks (AS1, AS2022, AS16 and AS114). Edit demo.py
+  in such a way, that all networks can reach each other. This means,
+  the pingall command (in the Mininet terminal) should work."
+  scenario: "demo"
+  examination: 0

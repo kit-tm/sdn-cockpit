@@ -1,0 +1,13 @@
+task:
+  name: "Task 3.2"
+  description:
+    In the scenario for this task, there are 
+    four networks (AS1, AS16, AS144, AS2022). All four
+    networks are connected to the same switch (s1)."
+  scenario: "task32"
+  graph: |
+    [ Switch ] -- { start: east; label: 2 }  [ AS2022 ] { origin: Switch; offset: 2,0; }
+    [ Switch ] -- { start: west; label: 4 }  [ AS144 ] { origin: Switch; offset: -2,0; }
+    [ Switch ] -- { start: north; label: 1 } [ AS1 ] { origin: Switch; offset: 0,-2; }
+    [ Switch ] -- { start: south; label: 3 } [ AS16 ] { origin: Switch; offset: 0,2; }
+  examination: 1

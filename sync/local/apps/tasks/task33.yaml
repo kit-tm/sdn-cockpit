@@ -1,0 +1,13 @@
+task:
+  name: "Task 3.3"
+  description:
+    Try to filter out as much attack traffic
+    without impacting service quality too much.
+    The attack traffic is considerably higher
+    than the normal traffic.
+  scenario: "task33"
+  graph: |
+    [ Switch ] -- { start: east; label: 2 }  [ AS2022 ] { origin: Switch; offset: 2,0; }
+    [ Switch ] -- { start: west; label: 4 }  [ AS144 ] { origin: Switch; offset: -2,0; }
+    [ Switch ] -- { start: north; label: 1 } [ AS1 ] { origin: Switch; offset: 0,-2; }
+    [ Switch ] -- { start: south; label: 3 } [ AS16 ] { origin: Switch; offset: 0,2; }

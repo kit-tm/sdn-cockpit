@@ -1,0 +1,73 @@
+# do not change this
+root:
+
+  # the name of the scenario
+  name: "Demo Scenario"
+
+  # a short description that can be printed to console
+  description: "A simple ISP test scenario with a 
+                single switch that interconnects four networks."
+
+  # link to a pdf with a more detailed description (if available)
+  pdf: "./demo_scenario.pdf"
+
+  # working directory for this scenario
+  working_directory: "cwd/demo"
+
+  # specify the topology of the scenario
+  topology:
+
+    # the switches of the topology
+    switches:
+      - name: s1
+        dpid: 1
+        enabled: True
+
+    hosts:
+      - name: AS1
+        ip: "17.0.0.1/8"
+      - name: AS2022
+        ip: "21.0.0.1/8"
+      - name: AS16
+        ip: "23.42.0.1/15"
+      - name: AS144
+        ip: "11.8.0.1/16"
+
+    links:
+      - [AS1, s1, 1000]
+      - [AS2022, s1, 1000]
+      - [AS16, s1, 1000]
+      - [AS144, s1, 1000]
+
+  networks:
+    -   name: "AS1"
+        alias: "AS 1"
+        subnets:
+          - "17.4.3.0/24"
+          - "17.4.14.0/24"
+          - "17.6.105.0/24"
+          - "17.6.165.0/24"
+          - "17.0.0.0/8"
+    -   name: "AS2022"
+        alias: "AS 2022"
+        subnets:
+          - "21.15.24.0/24"
+          - "21.33.0.0/16"
+          - "21.45.0.0/16"
+          - "21.80.0.0/16"
+          - "21.92.0.0/16"
+          - "21.150.11.0/24"
+    -   name: "AS16"
+        alias: "AS 16"
+        subnets:
+          - "23.42.0.0/15"
+          - "31.128.0.0/9"
+    -   name: "AS144"
+        alias: "AS 144"
+        subnets:
+          - "11.8.0.0/16"
+  
+  # traffic generation
+  traffic:
+    # specify all the profiles that should be used (in parallel!)
+    use_profiles: [] # None
