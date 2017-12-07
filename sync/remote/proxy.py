@@ -708,7 +708,7 @@ class Scheduler(threading.Thread):
 
     def _update_task(self, status, errors):
         # cleanup
-        os.system("rm tmp_result_*")
+        os.system("rm -f tmp_result_*")
 
         tmpfile = os.path.join(os.getcwd(), "tmp_result_%s.yaml" % time.time())
 
