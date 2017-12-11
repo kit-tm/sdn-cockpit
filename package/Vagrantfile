@@ -13,6 +13,9 @@ Vagrant.configure(2) do |config|
     # Create vagrant_data folder
     sudo mkdir -p /vagrant_data /vagrant_local
     sudo chown vagrant:vagrant /vagrant_data /vagrant_local
+    # Zero free space to aid VM compression
+    sudo dd if=/dev/zero of=/EMPTY bs=1M
+    sudo rm -f /EMPTY
   SHELL
   config.vm.provision :file, source: "../sync", destination: "/vagrant_data"
   config.vm.provision :file, source: "../sync/local", destination: "/vagrant_local"

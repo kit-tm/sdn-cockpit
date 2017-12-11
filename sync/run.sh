@@ -52,7 +52,7 @@ tmux select-pane -t 4
 tmux send-keys "python remote/script_run_watch.py" C-m
 
 # preselect mininet pane
-tmux select-pane -t $SESSION.$PANE_SCENARIO
+tmux select-pane -t $SESSION.$PANE_MININET
 
 # attach
 tmux attach-session -t $SESSION

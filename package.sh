@@ -3,7 +3,7 @@ set -e
 
 pushd package
 vagrant up
-vagrant package --vagrantfile Vagrantfile-local --output sdnlab.box
+vagrant package --vagrantfile Vagrantfile-local --output sdn-cockpit.box
 vagrant destroy -f
-mv sdnlab.box ../
+mv sdn-cockpit.box ../
 popd

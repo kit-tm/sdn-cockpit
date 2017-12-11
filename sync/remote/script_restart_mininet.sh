@@ -20,7 +20,7 @@ else
     log " + start mininet"
 fi
 
-rm __mn_ready
+rm -f __mn_ready
 tmux send-keys -t $SESSION.$PANE_MININET "sudo python remote/script_run_mininet.py "$SCENARIO C-m
 log " + waiting for mininet to start"
 wait_condition "file_exists __mn_ready" 10
