@@ -645,9 +645,9 @@ class Scheduler(threading.Thread):
 
         feedback = []
 
-        warn      = "Warning: {:d} packets expected at {:s} ({:d} received)"
-        err_exp   = "Error:   {:d} packets expected at {:s} ({:d} received)"
-        err_unexp = "Error:   {:d} unexpected packets recevied at {:s}"
+        infomsg   = "Info:  {:d} packets expected at {:s} ({:d} received)"
+        err_exp   = "Error: {:d} packets expected at {:s} ({:d} received)"
+        err_unexp = "Error: {:d} unexpected packets recevied at {:s}"
 
         # check recv stats
         if evaluation == "progressive":
@@ -667,8 +667,8 @@ class Scheduler(threading.Thread):
                     msg = err_exp.format(expected, host, accepted)
                     feedback.append(("red", msg))
                 elif abs(accepted - expected) > 1:
-                    msg = warn.format(expected, host, accepted)
-                    feedback.append(("yellow", msg))
+                    msg = infomsg.format(expected, host, accepted)
+                    feedback.append(("green", msg))
 
                 if rejected != 0:
                     status = "failure"
