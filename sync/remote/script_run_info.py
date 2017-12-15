@@ -90,11 +90,12 @@ if len(sys.argv) > 1:
                 # parsed.get("status") == None is allowed
                 # It won't generate a status line
 
-                if parsed.get("status") == "failure":
+                if parsed.get("status") is None:
+                    data['result'] = colored("No Scenario")
+                elif parsed.get("status") == "failure":
                     data['result'] = colored("FAILURE", "red")
                 elif parsed.get("status") == "success":
                     data['result'] = colored("SUCCESS", "green")
-
         except Exception as e:
             panic("ResultFile %s invalid (could not be parsed); %s" % (resultfile, str(e)))
     else:
