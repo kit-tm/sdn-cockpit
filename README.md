@@ -23,11 +23,9 @@ It seems that ``vagrant ssh`` is currently not working properly. While the login
 
 There is an issue with windows-style line endings. Currently, the only way to fix this is to run the following three commands inside the VM (i.e., after using ``vagrant ssh`` or putty):
 
-``
-sudo apt-get install dos2unix
-cd vagrant_data
-find ./ -type f -exec dos2unix {} \;
-``
+    sudo apt-get install dos2unix
+    cd vagrant_data
+    find ./ -type f -exec dos2unix {} \;
 
 ## Quickstart
 
