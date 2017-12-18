@@ -12,6 +12,23 @@ sdn-cockpit supports Linux, macOS and Windows. It depdends on Vagrant and Virtua
     cd sdn-cockpit
     vagrant up
 
+### Known issues while using Windows as host operating system
+
+#### vagrant ssh not working properly
+
+It seems that ``vagrant ssh`` is currently not working properly. While the login into the virtual machine works, commands are not execpted as expected. There is an easy workaround using the putty tool following these instructions: https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY
+
+
+#### run.sh script doesn't work
+
+There is an issue with windows-style line endings. Currently, the only way to fix this is to run the following three commands inside the VM (i.e., after using ``vagrant ssh`` or putty):
+
+``
+sudo apt-get install dos2unix
+cd vagrant_data
+find ./ -type f -exec dos2unix {} \;
+``
+
 ## Quickstart
 
 Enter the virtual machine and execute sdn-cockpit:
