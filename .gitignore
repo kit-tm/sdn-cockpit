@@ -8,3 +8,4 @@ sync/local/tmp
 sync/tmp*
 sync/local/venv
 sdn-cockpit.box
+sync/__mn_ready
