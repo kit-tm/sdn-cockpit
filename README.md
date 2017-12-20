@@ -16,12 +16,25 @@ sdn-cockpit supports Linux, macOS and Windows. It depdends on Vagrant and Virtua
 
 #### vagrant ssh not working properly
 
-It seems that ``vagrant ssh`` is currently not working properly. While the login into the virtual machine works, commands are not execpted as expected. There is an easy workaround using the putty tool following these instructions: https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY
+It seems that ``vagrant.exe ssh`` is currently not working properly when using git bash on windows. While the login into the virtual machine works, commands are not executed as expected (see https://github.com/hashicorp/vagrant/issues/9143).
+
+The easiest way to avoid this error is calling ssh directly (instead of using '''vagrant ssh'''):
+
+    ssh -p 2222 vagrant@127.0.0.1
+ 
+Password as well as username are set to ``vagrant``. If the above command fails, the port number might be different on your machine. You can see the port number in use (and more helpful information such as the username) by executing ``vagrant.exe ssh-config``.
+
+There is another easy workaround using the putty tool following these instructions: https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY
 
 
 #### run.sh script doesn't work
 
-There is an issue with windows-style line endings. Currently, the only way to fix this is to run the following three commands inside the VM (i.e., after using ``vagrant ssh`` or putty):
+There is an issue with windows-style line endings. To fix this, run the following command inside the project folder (outside the VM, on the windows host):
+
+    git config core.autocrlf false && git config core.eol lf && git reset --hard
+
+
+If this doesn't work, the following three executed inside the VM (i.e., after using ``vagrant ssh`` or putty) should fix the problem:
 
     sudo apt-get install dos2unix
     cd vagrant_data
