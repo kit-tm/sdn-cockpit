@@ -49,7 +49,7 @@ class CommandProcessor(object):
                                 if "=" in el:
                                     data = el.split("=")
                                     if len(data) == 2:
-                                        stripped_keys[data[0]] = data[1]    
+                                        stripped_keys[data[0]] = data[1]
 
                                 if "-" in el:
                                     stripped_flags.append(el.replace("-", ""))
@@ -63,9 +63,9 @@ class CommandProcessor(object):
 
     def __tm(self, params, flags, kwargs,  path):
         cmd = dict(
-            cmd="proxy_command", 
+            cmd="proxy_command",
             path=path,
-            params=params, 
+            params=params,
             flags=flags,
             kwargs=kwargs)
         return cmd
@@ -73,7 +73,7 @@ class CommandProcessor(object):
 class CommandInterpreter(object):
 
     def __init__(self):
-        pass  
+        pass
 
     def get_path_controller(self, path):
         """  take a local controller file and return the remote controller file  """
@@ -94,11 +94,11 @@ class CommandInterpreter(object):
 
     def get_path_scenario(self, scenario):
         if not scenario.endswith(".yaml"):
-            scenario += ".yaml"     
+            scenario += ".yaml"
         return os.path.join(os.getcwd(), "local", "apps", "scenarios", scenario)
 
     def check_topology(self, scenariofile):
-        """ returns true if the topology has to be changed """  
+        """ returns true if the topology has to be changed """
 
         if not scenariofile: return False;
         if not os.path.exists(scenariofile): return False;
@@ -119,6 +119,17 @@ class CommandInterpreter(object):
 
         # only restart mininet of topology changed
         return current_topology != topology
+
+    def on_save_host_hook(self, scenariofile):
+        if scenariofile is None: return
+        with open(scenariofile,"r") as file:
+            root = yaml.load(file.read()).get("root")
+            hook = root.get("on-save-host-hook")
+            if hook is None:
+                return
+            for host in root.get("topology").get("hosts"):
+                name = host.get("name")
+                os.system("m {} {}".format(name, hook))
 
 
     def run(self, cmd):
@@ -158,36 +169,36 @@ class CommandInterpreter(object):
 
         topology_change = self.check_topology(scenario)
         if topology_change:
-            os.system("exec remote/script_stop_all.sh")  
+            os.system("exec remote/script_stop_all.sh")
             time.sleep(3) #TODO unnecessary?
             os.system("exec remote/script_restart_mininet.sh true %s" % scenario)
             #time.sleep(5)
 
         if task:
-            os.system("exec remote/script_restart_task.sh true %s" % task)  
-            os.system("exec remote/script_restart_controller.sh true %s" % controller) 
+            os.system("exec remote/script_restart_task.sh true %s" % task)
+            os.system("exec remote/script_restart_controller.sh true %s" % controller)
             os.system("exec remote/script_restart_scenario.sh true %s %s" % (scenario, task))
+            self.on_save_host_hook(scenario)
             return
 
         if controller:
             os.system("exec remote/script_restart_controller.sh true %s" % controller)
         if scenario:
             os.system("exec remote/script_restart_scenario.sh true %s" % scenario)
-
-
+            self.on_save_host_hook(scenario)
 
 class Watch(threading.Thread):
 
     def __init__(self, **kwargs):
         super(Watch, self).__init__()
-        self.daemon = True  
+        self.daemon = True
         self.active = True
         self.files = dict()
 
     def add_dir(self, path):
         pass
 
-    def run(self):  
+    def run(self):
 
         # create watch for all application directories
         watchpath = os.path.join(os.getcwd(), "local", "apps", "src")
