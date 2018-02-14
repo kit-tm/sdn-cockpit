@@ -109,7 +109,7 @@ if len(sys.argv) > 1:
             out_file.flush()
             subprocess.call(["graph-easy %s" % in_file.name],
                 shell=True, stdin=None, stdout=out_file,
-                stderr=subprocess.STDOUT, cwd="/home/vagrant")
+                stderr=subprocess.STDOUT, cwd="/home/ubuntu")
             out_file.seek(0)
 
             print side_by_side(information % data, out_file.read(), 1)

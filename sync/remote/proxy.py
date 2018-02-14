@@ -474,13 +474,13 @@ class Sender(threading.Thread):
         # enough time to react
         subprocess.call([preexec_cmd],
             shell=True, stdin=None, stdout=FNULL,
-            stderr=subprocess.STDOUT, cwd="/home/vagrant")
+            stderr=subprocess.STDOUT, cwd="/home/ubuntu")
 
         time.sleep(0.5)
 
         subprocess.call([cmd],
             shell=True, stdin=None, stdout=FNULL,
-            stderr=subprocess.STDOUT, cwd="/home/vagrant")
+            stderr=subprocess.STDOUT, cwd="/home/ubuntu")
 
         # kill trafgens
         #os.system("ps -ef | grep %s | awk '{print $2}' | sudo xargs kill -9" % cfgfile)
@@ -715,7 +715,7 @@ class Scheduler(threading.Thread):
         with open(tmpfile, "w") as file:
             file.write(yaml.dump(dict(status = status, errors = errors)))
 
-        os.system("runuser -l vagrant -c '/vagrant_data/remote/script_restart_task.sh true %s %s'" % (TASK_FILE, tmpfile))
+        os.system("runuser -l ubuntu -c '/vagrant_data/remote/script_restart_task.sh true %s %s'" % (TASK_FILE, tmpfile))
 
 if __name__ == '__main__':
     thread = Scheduler()
