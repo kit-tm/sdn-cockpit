@@ -44,37 +44,37 @@ root:
       - name: hu
         ip: "23.42.0.1/16"
       - name: h1
-        ip: "17.0.1.1/8"
+        ip: "17.0.1.1/24"
       - name: h2
-        ip: "17.0.2.1/8"
+        ip: "17.0.2.1/24"
       - name: h3
-        ip: "17.0.3.1/8"
+        ip: "17.0.3.1/24"
       - name: h4
-        ip: "17.0.4.1/8"
+        ip: "17.0.4.1/24"
       - name: h5
-        ip: "17.0.5.1/8"
+        ip: "17.0.5.1/24"
       - name: h6
-        ip: "17.0.6.1/8"
+        ip: "17.0.6.1/24"
       - name: h7
-        ip: "17.0.7.1/8"
+        ip: "17.0.7.1/24"
       - name: h8
-        ip: "17.0.8.1/8"
+        ip: "17.0.8.1/24"
       - name: h9
-        ip: "17.0.9.1/8"
+        ip: "17.0.9.1/24"
       - name: h10
-        ip: "17.0.10.1/8"
+        ip: "17.0.10.1/24"
       - name: h11
-        ip: "17.0.11.1/8"
+        ip: "17.0.11.1/24"
       - name: h12
-        ip: "17.0.12.1/8"
+        ip: "17.0.12.1/24"
       - name: h13
-        ip: "17.0.13.1/8"
+        ip: "17.0.13.1/24"
       - name: h14
-        ip: "17.0.14.1/8"
+        ip: "17.0.14.1/24"
       - name: h15
-        ip: "17.0.15.1/8"
+        ip: "17.0.15.1/24"
       - name: h16
-        ip: "17.0.16.1/8"
+        ip: "17.0.16.1/24"
 
     links:
       - ["core", "hu", 1000]
@@ -104,23 +104,21 @@ root:
   networks:
     - name: "hu"
       alias: "Uplink"
-      recv_from_src:
-        - "17.0.1.0/8"
       recv_to_dst:
-        - "0.0.0.0/0"
+        - "23.42.0.0/16"
     - name: "h1"
       alias: "Host 1"
       send_from_src:
-        - "17.0.1.0/8"
+        - "17.0.1.0/24"
       send_to_dst:
-        - "0.0.0.0/0"
-        - "17.0.16.0/8"
+        - "23.42.0.0/16"
+        - "17.0.16.0/24"
     - name: "h16"
       alias: "Host 16"
-      recv_from_dst:
-        - "17.0.1.0/8"
+      recv_from_src:
+        - "17.0.1.0/24"
       recv_to_dst:
-        - "17.0.16.0/8"
+        - "17.0.16.0/24"
   # traffic generation
   traffic:
     # specify all the profiles that should be used (in parallel!)
