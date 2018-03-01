@@ -4,8 +4,8 @@
 sudo locale-gen en_US.UTF-8
 export LC_ALL="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
-echo 'export LC_ALL="en_US.UTF-8"' >> /home/ubuntu/.bashrc
-echo 'export LC_CTYPE="en_US.UTF-8"' >> /home/ubuntu/.bashrc
+echo 'export LC_ALL="en_US.UTF-8"' >> /home/vagrant/.bashrc
+echo 'export LC_CTYPE="en_US.UTF-8"' >> /home/vagrant/.bashrc
 
 # Install required packages
 sudo apt-get update -y
@@ -37,24 +37,24 @@ sudo cp ./mininet/util/m /usr/local/bin/
 echo 'export PATH=/vagrant_data/remote:$PATH' >> /etc/profile.d/vagrant_data.sh
 
 # Update bashrc
-echo 'alias mininet=mn' >> /home/ubuntu/.bashrc
-echo 'cd /vagrant_data' >> /home/ubuntu/.bashrc
+echo 'alias mininet=mn' >> /home/vagrant/.bashrc
+echo 'cd /vagrant_data' >> /home/vagrant/.bashrc
 
 # Update tmux.conf
-echo 'set-option -g mouse on' >> /home/ubuntu/.tmux.conf
-chown ubuntu:ubuntu /home/ubuntu/.tmux.conf
+echo 'set-option -g mouse on' >> /home/vagrant/.tmux.conf
+chown vagrant:vagrant /home/vagrant/.tmux.conf
 
 # Adjust TERM for cygwin to match terminfo database entry
-echo '[ "$TERM" == "cygwin" ] && export TERM=cygwinB19' >> /home/ubuntu/.profile
+echo '[ "$TERM" == "cygwin" ] && export TERM=cygwinB19' >> /home/vagrant/.profile
 
 # Install python packages
 sudo pip install ansiwrap termcolor terminaltables Pyro4 requests psutil ipaddr pyyaml
 
 # Remove unused directories
 sudo rm -rf \
-/home/ubuntu/mininet \
-/home/ubuntu/openflow \
-/home/ubuntu/ryu
+/home/vagrant/mininet \
+/home/vagrant/openflow \
+/home/vagrant/ryu
 
 # Remove unused packages
 sudo apt-get remove -y --autoremove \
