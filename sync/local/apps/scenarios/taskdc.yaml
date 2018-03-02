@@ -5,7 +5,7 @@ root:
   name: "taskdc"
 
   # a short description that can be printed to console
-  description: "Try to modify the demo.py controller application to enable transit traffic between the ASes."
+  description: "Try to modify the demo.py controller application to route traffic between the data center nodes."
 
   # link to a pdf with a more detailed description (if available)
   pdf: "./taskdc.pdf"
@@ -44,37 +44,37 @@ root:
       - name: hu
         ip: "23.42.0.1/16"
       - name: h1
-        ip: "17.0.1.1/24"
+        ip: "17.1.0.1/16"
       - name: h2
-        ip: "17.0.2.1/24"
+        ip: "17.2.0.1/16"
       - name: h3
-        ip: "17.0.3.1/24"
+        ip: "17.3.0.1/16"
       - name: h4
-        ip: "17.0.4.1/24"
+        ip: "17.4.0.1/16"
       - name: h5
-        ip: "17.0.5.1/24"
+        ip: "17.5.0.1/16"
       - name: h6
-        ip: "17.0.6.1/24"
+        ip: "17.6.0.1/16"
       - name: h7
-        ip: "17.0.7.1/24"
+        ip: "17.7.0.1/16"
       - name: h8
-        ip: "17.0.8.1/24"
+        ip: "17.8.0.1/16"
       - name: h9
-        ip: "17.0.9.1/24"
+        ip: "17.9.0.1/16"
       - name: h10
-        ip: "17.0.10.1/24"
+        ip: "17.10.0.1/16"
       - name: h11
-        ip: "17.0.11.1/24"
+        ip: "17.11.0.1/16"
       - name: h12
-        ip: "17.0.12.1/24"
+        ip: "17.12.0.1/16"
       - name: h13
-        ip: "17.0.13.1/24"
+        ip: "17.13.0.1/16"
       - name: h14
-        ip: "17.0.14.1/24"
+        ip: "17.14.0.1/16"
       - name: h15
-        ip: "17.0.15.1/24"
+        ip: "17.15.0.1/16"
       - name: h16
-        ip: "17.0.16.1/24"
+        ip: "17.16.0.1/16"
 
     links:
       - ["core", "hu", 1000]
@@ -104,21 +104,28 @@ root:
   networks:
     - name: "hu"
       alias: "Uplink"
+      recv_from_src:
+        - "17.2.0.0/16"
       recv_to_dst:
         - "23.42.0.0/16"
     - name: "h1"
       alias: "Host 1"
       send_from_src:
-        - "17.0.1.0/24"
+        - "17.1.0.0/16"
+      send_to_dst:
+        - "17.16.0.0/16"
+    - name: "h2"
+      alias: "Host 2"
+      send_from_src:
+        - "17.2.0.0/16"
       send_to_dst:
         - "23.42.0.0/16"
-        - "17.0.16.0/24"
     - name: "h16"
       alias: "Host 16"
       recv_from_src:
-        - "17.0.1.0/24"
+        - "17.1.0.0/16"
       recv_to_dst:
-        - "17.0.16.0/24"
+        - "17.16.0.0/16"
   # traffic generation
   traffic:
     # specify all the profiles that should be used (in parallel!)
