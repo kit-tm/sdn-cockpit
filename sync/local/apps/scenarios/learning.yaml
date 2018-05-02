@@ -1,0 +1,39 @@
+root:
+  name: "Learning switch"
+  description: "Learning switch implementation"
+  pdf: "./demo_scenario.pdf"
+  working_directory: "cwd/learning"
+  topology:
+    switches:
+      - name: s1
+        dpid: 1
+        enabled: True
+    hosts:
+      - name: h1
+        ip: "10.0.0.1/24"
+      - name: h2
+        ip: "10.0.0.2/24"
+      - name: h3
+        ip: "10.0.0.3/24"
+      - name: h4
+        ip: "10.0.0.4/24"
+    links:
+      - [h1, s1, 1000]
+      - [h2, s1, 1000]
+      - [h3, s1, 1000]
+      - [h4, s1, 1000]
+
+  networks:
+    - name: "h1"
+      alias: "H1"
+    - name: "h2"
+      alias: "H2"
+    - name: "h3"
+      alias: "H3"
+    - name: "h4"
+      alias: "H4"
+  
+  # traffic generation
+  traffic:
+    # specify all the profiles that should be used (in parallel!)
+    use_profiles: []

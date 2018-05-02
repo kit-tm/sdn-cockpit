@@ -1,0 +1,17 @@
+task:
+  name: "Learning switch"
+  description: >
+    The four hosts H1 ... H4 are connected to the switch S1.
+    Use reactive flow programming to learn which Ethernet
+    addresses are associated with each switch port.
+    Program flow rules based on this information to enable
+    forwarding between all hosts.
+    Use the ping or pingall commands in the mininet
+    console to verify connectivity.
+  scenario: "learning"
+  graph: |
+    [ S1 ] -- { start: north; label: 1 } [ H1 ] { origin: S1; offset:  0,-2; }
+    [ S1 ] -- { start: east;  label: 2 } [ H2 ] { origin: S1; offset:  2, 0; }
+    [ S1 ] -- { start: south; label: 3 } [ H3 ] { origin: S1; offset:  0, 2; }
+    [ S1 ] -- { start: west;  label: 4 } [ H4 ] { origin: S1; offset: -2, 0; }
+  examination: 0

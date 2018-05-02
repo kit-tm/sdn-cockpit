@@ -1,0 +1,15 @@
+task:
+  name: "PriorityFilter"
+  description: >
+    Network N1 is linked to the networks N2 and N3 by switch S1.
+    N1 sends IP packets from subnet 11.0.0.0/8 to subnet 22.0.0.0/8
+    of N2 and subnet 33.0.0.0/8 of N3. Unfortunately, due to a
+    misconfiguration some packets have an IP source address from
+    the non-public subnet 10.0.0.0/8. Forward the correct packets
+    to N1 and N2, but drop any packets with non-public source addresses.
+  scenario: "priorityfilter"
+  graph: |
+    [ S1 ] -- { start: north; label: 1 } [ N1 ] { origin: S1; offset:  0,-2; }
+    [ S1 ] -- { start: east;  label: 2 } [ N2 ] { origin: S1; offset:  2, 0; }
+    [ S1 ] -- { start: west;  label: 3 } [ N3 ] { origin: S1; offset: -2, 0; }
+  examination: 1

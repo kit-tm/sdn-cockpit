@@ -1,0 +1,12 @@
+task:
+  name: "Forwarding"
+  description: >
+    Network N1 is conected to the network N2 via switch S1.
+    N1 has subnet 11.0.0.0/8 and sends IP packets to N2 with
+    subnet 22.0.0.0/8. N2 sends packets in the reverse direction.
+    Forward the correct packets to N1 and N2.
+  scenario: "forwarding"
+  graph: |
+    [ S1 ] -- { start: west; label: 1 } [ N1 ] { origin: S1; offset: -2,0; }
+    [ S1 ] -- { start: east; label: 2 } [ N2 ] { origin: S1; offset:  2,0; }
+  examination: 1

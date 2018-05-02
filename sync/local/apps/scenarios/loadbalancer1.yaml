@@ -2,16 +2,16 @@
 root:
 
   # the name of the scenario
-  name: "task22"
+  name: "loadbalancer1"
 
   # a short description that can be printed to console
-  description: "Try to modify the demo.py controller application to enable transit traffic between the ASes."
+  description: "Use static rules to distribute the traffic evenly based on your knowledge of traffic from ip subnets."
 
   # link to a pdf with a more detailed description (if available)
-  pdf: "./task22.pdf"
+  pdf: "./loadbalancer1.pdf"
 
   # working directory for this scenario
-  working_directory: "cwd/task22"
+  working_directory: "cwd/loadbalancer1"
 
   # specify the topology of the scenario
   topology:
@@ -23,73 +23,35 @@ root:
         enabled: True
 
     hosts:
-      - name: AS1
-        ip: "17.0.0.1/8"
-      - name: AS2022
-        ip: "21.0.0.1/8"
-      - name: AS16
-        ip: "23.42.0.1/15"
-      - name: AS144
-        ip: "11.8.0.1/16"
+      - name: h1
+        ip: "10.1.0.1/16"
+      - name: h2
+        ip: "10.0.0.1/16"
+      - name: h3
+        ip: "10.0.0.2/16"
 
     links:
-      - ["AS1",    s1, 1000]
-      - ["AS2022", s1, 1000]
-      - ["AS16",   s1, 1000]
-      - ["AS144",  s1, 1000]
+      - [h1, s1, 1000]
+      - [h2, s1, 1000]
+      - [h3, s1, 1000]
 
   networks:
-    - name: "AS1"
-      alias: "AS 1"
+    - name: "h1"
+      alias: "H1"
       send_from_src:
-        - "17.4.3.0/24"
-        - "17.4.14.0/24"
-        - "17.6.105.0/24"
-        - "17.6.165.0/24"
-        - "17.8.15.0/24"
-        - "17.10.0.0/16"
-        - "17.10.143.0/24"
-        - "17.12.0.0/16"
+        - "10.1.0.0/16"
       send_to_dst:
-        - "25.16.4.0/24"
-        - "116.0.0.0/8"
-        - "14.14.14.0/24"
-        - "6.6.6.6/32"
-        - "18.9.3.0/24"
-        - "25.1.7.0/24"
-        - "7.122.0.0/16"
-        - "99.13.12.0/24"
-    - name: "AS2022"
-      alias: "AS 2022"
+        - "10.0.0.0/16"
+    - name: "h2"
+      alias: "H2"
+      packet_ratio: 0.5
       recv_to_dst:
-        - "25.16.4.0/24"
-        - "116.0.0.0/8"
-        - "14.14.14.0/24"
-        - "6.6.6.6/32"
-      reject_from_src:
-        - "17.4.3.0/24"
-        - "17.4.14.0/24"
-        - "17.6.105.0/24"
-        - "17.6.165.0/24"
-    - name: "AS16"
-      alias: "AS 16"
-      recv_from_src:
-        - "17.4.3.0/24"
-        - "17.4.14.0/24"
-        - "17.6.105.0/24"
-        - "17.6.165.0/24"
-    - name: "AS144"
-      alias: "AS 144"
+        - "10.0.0.0/16"
+    - name: "h3"
+      alias: "H3"
+      packet_ratio: 0.5
       recv_to_dst:
-        - "18.9.3.0/24"
-        - "25.1.7.0/24"
-        - "7.122.0.0/16"
-        - "99.13.12.0/24"
-      reject_from_src:
-        - "17.4.3.0/24"
-        - "17.4.14.0/24"
-        - "17.6.105.0/24"
-        - "17.6.165.0/24"
+        - "10.0.0.0/16"
 
   # traffic generation
   traffic:
@@ -101,22 +63,22 @@ root:
   traffic_profiles:
     #  the default profile
     - name: default
-      # estimated runtime of this schedule in seconds
+      # estimated runtime in seconds of this schedule in seconds
       runtime: 1
       # grace time in seconds before performing a traffic analysis
       wait_for_analaysis: 3
       # automatically create the schedule with the parameters specified
       type: auto
       # evaluation schema: strict, progressive or disregard
-      evaluation: strict
+      evaluation: progressive
       # specify the parameters for the schedule
       params: 
         # generate x events in total
-        events: 25
+        events: 100
         # randomly select time range for a event between [a,b]
-        range_time: [1,10] 
+        range_time: [1,1] 
         # randomly select the amount of packets from the given array
-        choice_packets: [1000]
+        choice_packets: [100]
         # randomly select a inter arrival time from the given array
         choice_iat: ["1us"]
         # randomly select a priority from the given array

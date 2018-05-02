@@ -1,0 +1,14 @@
+task:
+  name: "Load-balancer 1"
+  description: >
+    Distribute the traffic from host H1
+    evenly among host H2 and H3. All
+    traffic is directed to addresses in
+    the subnet 10.0.0.0/16. All hosts
+    are connected to switch S.
+  scenario: "loadbalancer1"
+  graph: |
+    [ S1 ] -- { start: east; label: 2 }  [ H1 ] { origin: S1; offset: 2,0; }
+    [ S1 ] -- { start: west; label: 4 }  [ H2 ] { origin: S1; offset: -2,0; }
+    [ S1 ] -- { start: north; label: 1 } [ H3 ] { origin: S1; offset: 0,-2; }
+  examination: 1

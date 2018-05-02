@@ -73,19 +73,23 @@ class Network(object):
         return Network(
             d.get("name"),
             d.get("alias", None),
+            d.get("packet_ratio", 1.0),
             d.get("send_from_src", None),
             d.get("send_to_dst", None),
             d.get("recv_from_src", None),
-            d.get("recv_to_dst", None)
+            d.get("recv_to_dst", None),
+            d.get("reject_from_src", None)
         )
 
-    def __init__(self, name, alias = None, send_from_src = None, send_to_dst = None, recv_from_src = None, recv_to_dst = None):
+    def __init__(self, name, alias = None, packet_ratio = 1.0, send_from_src = None, send_to_dst = None, recv_from_src = None, recv_to_dst = None, reject_from_src = None):
         self.name = name
         self.alias = alias if alias else ''
+        self.packet_ratio = packet_ratio
         self.send_from_src = [] if not send_from_src else send_from_src
         self.send_to_dst = [] if not send_to_dst else send_to_dst
         self.recv_from_src = [] if not recv_from_src else recv_from_src
         self.recv_to_dst = [] if not recv_to_dst else recv_to_dst
+        self.reject_from_src = [] if not reject_from_src else reject_from_src
 
 
 class NetworkOracle(object):
@@ -159,20 +163,51 @@ class NetworkOracle(object):
     def get_senders(self):
         return self.senders
 
+    def _ip_in_subnets(self, ip, subnets):
+        for s in subnets:
+            if ip in IPv4Network(s):
+                return True
+
+        return False
+
+    # deprecated
     def get_expected_destination(self, src_ip, dst_ip):
         src_ip = IPv4Address(src_ip)
         dst_ip = IPv4Address(dst_ip)
 
-        # src_ip takes precedence over dst_ip
-        for subnet, net in self.src_ip2dst_host.iteritems():
-            if src_ip in subnet:
+        # check constraints in order of precedence
+        for net in self.networks.values():
+            if self._ip_in_subnets(src_ip, net.reject_from_src):
+                continue
+
+            if self._ip_in_subnets(src_ip, net.recv_from_src):
                 return net.name
 
-        for subnet, net in self.dst_ip2dst_host.iteritems():
-            if dst_ip in subnet:
+            if self._ip_in_subnets(dst_ip, net.recv_to_dst):
                 return net.name
 
         return None
+
+    def get_expected_destinations(self, src_ip, dst_ip):
+        src_ip = IPv4Address(src_ip)
+        dst_ip = IPv4Address(dst_ip)
+
+        dst_nets = []
+
+        # check constraints in order of precedence
+        for net in self.networks.values():
+            if self._ip_in_subnets(src_ip, net.reject_from_src):
+                continue
+
+            if self._ip_in_subnets(src_ip, net.recv_from_src):
+                dst_nets.append(net.name)
+                continue
+
+            if self._ip_in_subnets(dst_ip, net.recv_to_dst):
+                dst_nets.append(net.name)
+                continue
+
+        return dst_nets
 
     def get_switch(self, hostname):
         pass
@@ -264,6 +299,8 @@ class TrafficProfile(object):
         self.events = dict() # the event schedule, sorted by time
         self.num_events = 0 # number of events in the profile
         self.evaluation = profile.get("evaluation", "strict")
+        # tolerance for progressive evaluation
+        self.tolerance = profile.get("tolerance", 0.2)
 
         # make sure the folder for this profile exists
         self.setup_profile_dir()
@@ -541,6 +578,7 @@ class Scheduler(threading.Thread):
             b = BpfBuilder()
             b.exclude_src_subnets(net.recv_from_src)
             b.exclude_dst_subnets(net.recv_to_dst)
+            b.include_src_subnets(net.reject_from_src)
 
             rejected = m.evaluate(b.compile())
 
@@ -561,6 +599,7 @@ class Scheduler(threading.Thread):
         num_events = 0
         wait_for_analaysis = 0
         evaluation = "strict"
+        tolerance = 1
 
         defined_profiles = {
             _.get("name") : _
@@ -581,6 +620,7 @@ class Scheduler(threading.Thread):
             if profile.evaluation == "progressive":
                 # downgrade to progressive evaluation
                 evaluation = profile.evaluation
+                tolerance = profile.tolerance
 
             for schedule_time, events in profile.events.iteritems():
                 if not schedule.has_key(schedule_time):
@@ -622,18 +662,33 @@ class Scheduler(threading.Thread):
                     threads.append(thread)
 
                     # update packet statistics
-                    packets = event.get("packets")
+                    src_ip = event.get("src_ip")
+                    dst_ip = event.get("dst_ip")
                     src_host = event.get("src_host")
-                    dst_host = event.get("dst_host")
+                    packets = event.get("packets")
 
                     if event.get("evaluation") in ("strict", "progressive"):
-                        exp_sent[src_host] += packets
-                        exp_recv[dst_host] += packets
+                        if src_host:
+                            exp_sent[src_host] += packets
+
+                        dst_hosts = self.oracle.get_expected_destinations(
+                            src_ip, dst_ip
+                        )
+
+                        for dst_host in dst_hosts:
+                            exp_recv[dst_host] += packets
 
                 del schedule[time_index]
 
             time.sleep(1)
             time_index += 1
+
+        # reduce total packet count by the expected packet_ratio
+        # for each destination host
+        exp_recv = {
+            host : int(packets * self.oracle.networks[host].packet_ratio)
+            for host, packets in exp_recv.iteritems()
+        }
 
         for thread in threads:
             thread.join()
@@ -653,7 +708,6 @@ class Scheduler(threading.Thread):
         if evaluation == "progressive":
             # progressive evaluation
             status = "success"
-            tolerance = 0.2
 
             for host, expected in exp_recv.iteritems():
                 accepted, rejected = stats.get(host)
@@ -677,7 +731,6 @@ class Scheduler(threading.Thread):
         else:
             # strict evaluation
             status = "success"
-            tolerance = 1
 
             for host, expected in exp_recv.iteritems():
                 accepted, rejected = stats.get(host)

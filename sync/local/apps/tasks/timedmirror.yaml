@@ -1,0 +1,16 @@
+task:
+  name: "TimedMirror"
+  description: >
+    Traffic from network N1 to N2 and N3 (ip subnets 22.0.0.0/8
+    and 33.0.0.0/8 respectively) shall be forwarded to those
+    networks. However, whenever a flow with a destination IP address
+    outside of those address ranges occurs, the entire traffic
+    to the /8 subnet that contains the IP address shall be mirrored
+    to N4 for 4 seconds and dropped afterwards.
+  scenario: "timedmirror"
+  graph: |
+    [ S1 ] -- { start: north; label: 1 } [ N1 ] { origin: S1; offset:  0,-2; }
+    [ S1 ] -- { start: east;  label: 2 } [ N2 ] { origin: S1; offset:  2, 0; }
+    [ S1 ] -- { start: south; label: 3 } [ N3 ] { origin: S1; offset:  0, 2; }
+    [ S1 ] -- { start: west;  label: 4 } [ N4 ] { origin: S1; offset: -2, 0; }
+  examination: 1

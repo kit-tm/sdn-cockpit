@@ -1,96 +1,46 @@
-# do not change this
 root:
-
-  # the name of the scenario
-  name: "task22"
-
-  # a short description that can be printed to console
-  description: "Try to modify the demo.py controller application to enable transit traffic between the ASes."
-
-  # link to a pdf with a more detailed description (if available)
-  pdf: "./task22.pdf"
-
-  # working directory for this scenario
-  working_directory: "cwd/task22"
-
-  # specify the topology of the scenario
+  name: "PriorityFilter"
+  description: "Priority-based packet filtering"
+  pdf: "./demo_scenario.pdf"
+  working_directory: "cwd/priorityfilter"
   topology:
-
-    # the switches of the topology
     switches:
       - name: s1
         dpid: 1
         enabled: True
-
     hosts:
-      - name: AS1
-        ip: "17.0.0.1/8"
-      - name: AS2022
-        ip: "21.0.0.1/8"
-      - name: AS16
-        ip: "23.42.0.1/15"
-      - name: AS144
-        ip: "11.8.0.1/16"
-
+      - name: n1
+        ip: "11.0.0.1/7"
+      - name: n2
+        ip: "22.0.0.1/8"
+      - name: n3
+        ip: "33.0.0.1/8"
     links:
-      - ["AS1",    s1, 1000]
-      - ["AS2022", s1, 1000]
-      - ["AS16",   s1, 1000]
-      - ["AS144",  s1, 1000]
+      - [n1, s1, 1000]
+      - [n2, s1, 1000]
+      - [n3, s1, 1000]
 
   networks:
-    - name: "AS1"
-      alias: "AS 1"
+    - name: "n1"
+      alias: "N1"
       send_from_src:
-        - "17.4.3.0/24"
-        - "17.4.14.0/24"
-        - "17.6.105.0/24"
-        - "17.6.165.0/24"
-        - "17.8.15.0/24"
-        - "17.10.0.0/16"
-        - "17.10.143.0/24"
-        - "17.12.0.0/16"
+        - "11.0.0.0/7"
       send_to_dst:
-        - "25.16.4.0/24"
-        - "116.0.0.0/8"
-        - "14.14.14.0/24"
-        - "6.6.6.6/32"
-        - "18.9.3.0/24"
-        - "25.1.7.0/24"
-        - "7.122.0.0/16"
-        - "99.13.12.0/24"
-    - name: "AS2022"
-      alias: "AS 2022"
+        - "22.0.0.0/8"
+        - "33.0.0.0/8"
+    - name: "n2"
+      alias: "N2"
       recv_to_dst:
-        - "25.16.4.0/24"
-        - "116.0.0.0/8"
-        - "14.14.14.0/24"
-        - "6.6.6.6/32"
+        - "22.0.0.0/8"
       reject_from_src:
-        - "17.4.3.0/24"
-        - "17.4.14.0/24"
-        - "17.6.105.0/24"
-        - "17.6.165.0/24"
-    - name: "AS16"
-      alias: "AS 16"
-      recv_from_src:
-        - "17.4.3.0/24"
-        - "17.4.14.0/24"
-        - "17.6.105.0/24"
-        - "17.6.165.0/24"
-    - name: "AS144"
-      alias: "AS 144"
+        - "11.0.0.0/8"
+    - name: "n3"
+      alias: "N3"
       recv_to_dst:
-        - "18.9.3.0/24"
-        - "25.1.7.0/24"
-        - "7.122.0.0/16"
-        - "99.13.12.0/24"
+        - "33.0.0.0/8"
       reject_from_src:
-        - "17.4.3.0/24"
-        - "17.4.14.0/24"
-        - "17.6.105.0/24"
-        - "17.6.165.0/24"
-
+        - "11.0.0.0/8"
+  
   # traffic generation
   traffic:
     # specify all the profiles that should be used (in parallel!)

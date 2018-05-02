@@ -30,7 +30,6 @@ class CommandProcessor(object):
                         cmd.update(new_cmd)
         return cmd
 
-
     def parse_line(self, cmd_line, path):
         c = cmd_line.split(" ")
         if len(c) > 0:
@@ -143,6 +142,10 @@ class CommandInterpreter(object):
         # reload controller (always)
         controller = self.get_path_controller(cmd.get("path"))
         print colored('.. controller: %s' % controller, 'white')
+
+        if not kwargs:
+            print colored('.. controller: not an application', 'white')
+            return
 
         # a task is specified
         if kwargs.has_key("task"):

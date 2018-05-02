@@ -20,6 +20,7 @@ if [ "$1" = true ]; then
 
     log " + delete all flows"
     tmux send-keys -t $SESSION.$PANE_MININET ENTER ENTER 'dpctl del-flows' ENTER
+    tmux send-keys -t $SESSION.$PANE_MININET ENTER ENTER 'dpctl del-groups -O OpenFlow13' ENTER
     sleep 0.2 #TODO unnecessary? (if dpctl del-flows blocks)
 
     log " + restart controller"
