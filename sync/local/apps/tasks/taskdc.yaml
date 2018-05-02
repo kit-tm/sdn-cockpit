@@ -1,0 +1,9 @@
+task:
+  name: "Task DC"
+  description: >
+    In the scenario for this task, there
+    are four networks (AS1, AS16, AS144,
+    AS2022). All four networks are connected
+    to the same switch (s1).
+  scenario: "taskdc"
+  examination: 1

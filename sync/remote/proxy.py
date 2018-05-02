@@ -710,6 +710,9 @@ class Scheduler(threading.Thread):
             status = "success"
 
             for host, expected in exp_recv.iteritems():
+                if host not in stats:
+                    continue
+
                 accepted, rejected = stats.get(host)
 
                 if accepted > expected * (1.0 + tolerance):
@@ -733,6 +736,9 @@ class Scheduler(threading.Thread):
             status = "success"
 
             for host, expected in exp_recv.iteritems():
+                if host not in stats:
+                    continue
+
                 accepted, rejected = stats.get(host)
 
                 if abs(accepted - expected) > tolerance:
