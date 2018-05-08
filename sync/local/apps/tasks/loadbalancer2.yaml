@@ -1,0 +1,19 @@
+task:
+  name: "Load-balancer 2"
+  description: >
+    Host H1 sends IP packets to host H2 and H3.
+    Forward all traffic with destination
+    IP addresses in 22.0.0.0/8 to host H2 and
+    33.0.0.0/8 to host H3. The amount of traffic
+    of these flows varies over time. Dynamically
+    distribute all traffic with a destination
+    IP address in 44.0.0.0/8 in such a way
+    that host H2 and H3 receive an equal
+    share of the combined traffic (i.e., all
+    flows sent from H1) over time.
+  scenario: "loadbalancer2"
+  graph: |
+    [ S1 ] -- { start: north; label: 1 } [ H1 ] { origin: S1; offset: 0,-2; }
+    [ S1 ] -- { start: east; label: 2 }  [ H2 ] { origin: S1; offset: 2,0; }
+    [ S1 ] -- { start: west; label: 3 }  [ H3 ] { origin: S1; offset: -2,0; }
+  examination: 1
