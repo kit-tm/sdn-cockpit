@@ -1,0 +1,9 @@
+task:
+  name: "Routing"
+  description: >
+    Route the network traffic in accordance with the specified
+    routing policy. Provide a textual output on traffic
+    statistics for each flow on every switch. Please refer
+    to the written task description for topology information.
+  scenario: "routing"
+  examination: 1

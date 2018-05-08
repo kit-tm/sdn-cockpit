@@ -1,0 +1,147 @@
+root:
+  name: "Routing"
+  description: "Routing"
+  pdf: "./demo_scenario.pdf"
+  working_directory: "cwd/routing"
+  topology:
+    switches:
+      - name: s1
+        dpid: 1
+        enabled: True
+      - name: s2
+        dpid: 2
+        enabled: True
+      - name: s3
+        dpid: 3
+        enabled: True
+      - name: s4
+        dpid: 4
+        enabled: True
+      - name: s5
+        dpid: 5
+        enabled: True
+      - name: s6
+        dpid: 6
+        enabled: True
+      - name: s7
+        dpid: 7
+        enabled: True
+      - name: s8
+        dpid: 8
+        enabled: True
+    hosts:
+      - name: h1
+        ip: "11.0.0.1/8"
+      - name: h2
+        ip: "22.0.0.1/8"
+      - name: h3
+        ip: "33.0.0.1/8"
+      - name: h4
+        ip: "44.0.0.1/8"
+    links:
+      - [s1, s2, 1000]
+      - [s1, s3, 1000]
+      - [s1, s4, 1000]
+      - [s2, s3, 1000]
+      - [s2, s5, 1000]
+      - [s3, s4, 1000]
+      - [s3, s5, 1000]
+      - [s3, s6, 1000]
+      - [s4, s6, 1000]
+      - [s4, s8, 1000]
+      - [s5, s6, 1000]
+      - [s5, s7, 1000]
+      - [s6, s7, 1000]
+      - [s6, s8, 1000]
+      - [s7, s8, 1000]
+      - [s1, h1, 1000]
+      - [s4, h2, 1000]
+      - [s8, h3, 1000]
+      - [s7, h4, 1000]
+
+  networks:
+    - name: "h1"
+      alias: "H1"
+      send_from_src:
+        - "11.0.0.0/8"
+      send_to_dst:
+        - "22.0.0.0/8"
+        - "33.0.0.0/8"
+        - "44.0.0.0/8"
+      recv_to_dst:
+        - "11.0.0.0/8"
+    - name: "h2"
+      alias: "H2"
+      send_from_src:
+        - "22.0.0.0/8"
+      send_to_dst:
+        - "11.0.0.0/8"
+        - "33.0.0.0/8"
+        - "44.0.0.0/8"
+      recv_to_dst:
+        - "22.0.0.0/8"
+    - name: "h3"
+      alias: "H3"
+      send_from_src:
+        - "33.0.0.0/8"
+      send_to_dst:
+        - "11.0.0.0/8"
+        - "22.0.0.0/8"
+        - "44.0.0.0/8"
+      recv_to_dst:
+        - "33.0.0.0/8"
+    - name: "h4"
+      alias: "H4"
+      send_from_src:
+        - "44.0.0.0/8"
+      send_to_dst:
+        - "11.0.0.0/8"
+        - "22.0.0.0/8"
+        - "33.0.0.0/8"
+      recv_to_dst:
+        - "44.0.0.0/8"
+  
+  # traffic generation
+  traffic:
+    # specify all the profiles that should be used (in parallel!)
+    use_profiles:
+      - default
+
+  # specify traffic profiles for this scenario
+  traffic_profiles:
+    #  the default profile
+    - name: default
+      # estimated runtime of this schedule in seconds
+      runtime: 1
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 3
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # evaluation schema: strict, progressive or disregard
+      evaluation: strict
+      # specify the parameters for the schedule
+      params: 
+        # generate x events in total
+        events: 25
+        # randomly select time range for a event between [a,b]
+        range_time: [1,10] 
+        # randomly select the amount of packets from the given array
+        choice_packets: [1000]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+
+  # more advanced traffic generation parameters
+  trafgen:
+
+    # Specifies the (random) ips that are used in the traffic generator.
+    # This is required for setting up the network oracle in 
+    # the controller. The file is stored in the working directory of the
+    # scenario so this can be the same for all scenarios (no need to change).
+    deployment_file: "oracle/deployment.yaml"
+    
+    # Artifical delay for udp streams. The first packet is
+    # sent immediatly and all other packets are sent after a timeout
+    # that can be specified with this variable.
+    udp_first_packet_delay: 0.5
