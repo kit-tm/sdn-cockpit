@@ -1,0 +1,14 @@
+task:
+  name: "Static Service Chaining"
+  description: >
+    Establish the required service chains C1-C4
+    on demand.
+  scenario: "sfc1"
+  graph: |
+    [ S1 ] -- { start: west; }  [ I ]  { origin: S1; offset: -2, 0; }
+    [ S1 ] -- { start: east;  } [ S2 ] { origin: S1; offset:  2, 0; }
+    [ S1 ] -- { start: south; } [ S3 ] { origin: S1; offset:  0, 2; }
+    [ S2 ] -- { start: south; } [ S4 ] { origin: S2; offset:  0,-2; }
+    [ S3 ] -- { start: east;  } [ S4 ] { origin: S3; offset:  2, 0; }
+    [ S4 ] -- { start: east;  } [ E ]  { origin: S4; offset:  2, 0; }
+  examination: 1

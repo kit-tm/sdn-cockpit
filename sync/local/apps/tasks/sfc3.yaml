@@ -1,0 +1,15 @@
+task:
+  name: "Balanced Chaining"
+  description: >
+    Instantiate multiple instances of the service
+    chains C1-C3 when as needed and load-balance
+    the incoming traffic between them.
+  scenario: "sfc3"
+  graph: |
+    [ S1 ] -- { start: west; }  [ I ]  { origin: S1; offset: -2, 0; }
+    [ S1 ] -- { start: east;  } [ S2 ] { origin: S1; offset:  2, 0; }
+    [ S1 ] -- { start: south; } [ S3 ] { origin: S1; offset:  0, 2; }
+    [ S2 ] -- { start: south; } [ S4 ] { origin: S2; offset:  0,-2; }
+    [ S3 ] -- { start: east;  } [ S4 ] { origin: S3; offset:  2, 0; }
+    [ S4 ] -- { start: east;  } [ E ]  { origin: S4; offset:  2, 0; }
+  examination: 1

@@ -1,0 +1,253 @@
+# do not change this
+root:
+
+  # the name of the scenario
+  name: "sfc2"
+
+  # a short description that can be printed to console
+  description: "Establish required service chains."
+
+  # link to a pdf with a more detailed description (if available)
+  pdf: "./sfc2.pdf"
+
+  # working directory for this scenario
+  working_directory: "cwd/sfc2"
+
+  # specify the topology of the scenario
+  topology:
+
+    # the switches of the topology
+    switches:
+      - name: s1
+        dpid: 1
+        enabled: True
+      - name: s2
+        dpid: 2
+        enabled: True
+      - name: s3
+        dpid: 3
+        enabled: True
+      - name: s4
+        dpid: 4
+        enabled: True
+      - name: i
+        dpid: 5
+        enabled: True
+      - name: e
+        dpid: 6
+        enabled: True
+
+    hosts:
+      - name: send1
+        ip: "11.1.0.1/16"
+      - name: recv1
+        ip: "22.1.0.1/16"
+      - name: send2
+        ip: "11.2.0.1/16"
+      - name: recv2
+        ip: "22.2.0.1/16"
+      - name: send3
+        ip: "11.3.0.1/16"
+      - name: recv3
+        ip: "22.3.0.1/16"
+      - name: send4
+        ip: "11.4.0.1/16"
+      - name: recv4
+        ip: "22.4.0.1/16"
+
+    links:
+      - [send1,  i, 1000]
+      - [send2,  i, 1000]
+      - [send3,  i, 1000]
+      - [send4,  i, 1000]
+      - [    i, s1, 1000]
+      - [   s1, s2, 1000]
+      - [   s1, s3, 1000]
+      - [   s2, s4, 1000]
+      - [   s3, s4, 1000]
+      - [   s4,  e, 1000]
+      - [recv1,  e, 1000]
+      - [recv2,  e, 1000]
+      - [recv3,  e, 1000]
+      - [recv4,  e, 1000]
+
+  networks:
+    - name: "send1"
+      alias: "SEND1"
+      send_from_src:
+        - "11.1.0.0/16"
+      send_to_dst:
+        - "22.1.0.0/16"
+    - name: "recv1"
+      alias: "RECV1"
+      recv_to_dst:
+        - "22.1.0.0/16"
+    - name: "send2"
+      alias: "SEND2"
+      send_from_src:
+        - "11.2.0.0/16"
+      send_to_dst:
+        - "22.2.0.0/16"
+    - name: "recv2"
+      alias: "RECV2"
+      recv_to_dst:
+        - "22.2.0.0/16"
+    - name: "send3"
+      alias: "SEND3"
+      send_from_src:
+        - "11.3.0.0/16"
+      send_to_dst:
+        - "22.3.0.0/16"
+    - name: "recv3"
+      alias: "RECV3"
+      recv_to_dst:
+        - "22.3.0.0/16"
+    - name: "send4"
+      alias: "SEND4"
+      send_from_src:
+        - "11.4.0.0/16"
+      send_to_dst:
+        - "22.4.0.0/16"
+    - name: "recv4"
+      alias: "RECV4"
+      recv_to_dst:
+        - "22.4.0.0/16"
+
+  # traffic generation
+  traffic:
+    # specify all the profiles that should be used (in parallel!)
+    use_profiles:
+      - sc1
+      - sc2
+      - sc3
+      - sc4
+
+  # specify traffic profiles for this scenario
+  traffic_profiles:
+    #  the default profile
+    - name: sc1
+      # estimated runtime in seconds of this schedule in seconds
+      runtime: 10
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 3
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # evaluation schema: strict, progressive or disregard
+      evaluation: disregard
+      # specify the parameters for the schedule
+      params: 
+        # generate x events in total
+        events: 1
+        # randomly select time range for a event between [a,b]
+        time_range: [1,10] 
+        # randomly select the amount of packets from the given array
+        choice_packets: [10000]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+        ip_overrides:
+          count: 5
+          src_hosts: ["send1"]
+          dst_hosts: ["recv1"]
+    - name: sc2
+      # estimated runtime of this schedule in seconds
+      runtime: 10
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 3
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # evaluation schema: strict, progressive or disregard
+      evaluation: disregard
+      # specify the parameters for the schedule
+      params: 
+        # generate x events in total
+        events: 1
+        # randomly select time range for a event between [a,b]
+        time_range: [1,10] 
+        # randomly select the amount of packets from the given array
+        choice_packets: [10000]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+        # randomly choose a number of ip source addresses corresponding
+        # to the selected hosts and keep them fixed during event
+        # generation. Choose any of the destination addresses from the
+        # range associated with hosts in dst_hosts
+        ip_overrides:
+          count: 5
+          src_hosts: ["send2"]
+          dst_hosts: ["recv2"]
+    - name: sc3
+      # estimated runtime of this schedule in seconds
+      runtime: 10
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 3
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # evaluation schema: strict, progressive or disregard
+      evaluation: disregard
+      # specify the parameters for the schedule
+      params: 
+        # generate x events in total
+        events: 1
+        # randomly select time range for a event between [a,b]
+        time_range: [1,10] 
+        # randomly select the amount of packets from the given array
+        choice_packets: [10000]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+        # randomly choose a number of ip source addresses corresponding
+        # to the selected hosts and keep them fixed during event
+        # generation. Choose any of the destination addresses from the
+        # range associated with hosts in dst_hosts
+        ip_overrides:
+          count: 5
+          src_hosts: ["send3"]
+          dst_hosts: ["recv3"]
+    - name: sc4
+      # estimated runtime of this schedule in seconds
+      runtime: 10
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 3
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # evaluation schema: strict, progressive or disregard
+      evaluation: disregard
+      # specify the parameters for the schedule
+      params: 
+        # generate x events in total
+        events: 1
+        # randomly select time range for a event between [a,b]
+        time_range: [1,10] 
+        # randomly select the amount of packets from the given array
+        choice_packets: [10000]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+        # randomly choose a number of ip source addresses corresponding
+        # to the selected hosts and keep them fixed during event
+        # generation. Choose any of the destination addresses from the
+        # range associated with hosts in dst_hosts
+        ip_overrides:
+          count: 5
+          src_hosts: ["send4"]
+          dst_hosts: ["recv4"]
+
+  # more advanced traffic generation parameters
+  trafgen:
+
+    # Specifies the (random) ips that are used in the traffic generator.
+    # This is required for setting up the network oracle in 
+    # the controller. The file is stored in the working directory of the
+    # scenario so this can be the same for all scenarios (no need to change).
+    deployment_file: "oracle/deployment.yaml"
+    
+    # Artifical delay for udp streams. The first packet is
+    # sent immediatly and all other packets are sent after a timeout
+    # that can be specified with this variable.
+    udp_first_packet_delay: 0.5
