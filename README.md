@@ -8,7 +8,7 @@ The tool provides an easy-to-use environment for fast pace SDN application devel
 
 sdn-cockpit supports Linux, macOS and Windows. It depdends on Vagrant and VirtualBox (https://www.virtualbox.org/), which need to be installed beforehand. Install sdn-cockpit with:
 
-    git clone https://github.com/KIT-Telematics/sdn-cockpit.git
+    git clone https://github.com/kit-tm/sdn-cockpit.git
     cd sdn-cockpit
     vagrant up
 
