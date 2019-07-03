@@ -107,7 +107,7 @@ class CommandInterpreter(object):
         topology = None
         try:
             with open(scenariofile,"r") as file:
-                topology = yaml.dump(yaml.load(file.read()).get("root").get("topology"))
+                topology = yaml.dump(yaml.safe_load(file.read()).get("root").get("topology"))
         except:
             return False
 
@@ -122,7 +122,7 @@ class CommandInterpreter(object):
     def on_save_host_hook(self, scenariofile):
         if scenariofile is None: return
         with open(scenariofile,"r") as file:
-            root = yaml.load(file.read()).get("root")
+            root = yaml.safe_load(file.read()).get("root")
             hook = root.get("on-save-host-hook")
             if hook is None:
                 return
@@ -157,7 +157,7 @@ class CommandInterpreter(object):
                 parsed = None
                 try:
                     with open(task, "r") as file:
-                        parsed = yaml.load(file.read())
+                        parsed = yaml.safe_load(file.read())
                         scenario = parsed.get("task").get("scenario")
                         scenario = self.get_path_scenario(scenario)
                 except Exception as e:

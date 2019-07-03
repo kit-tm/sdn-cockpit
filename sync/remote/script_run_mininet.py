@@ -34,7 +34,7 @@ if len(sys.argv) > 1:
     topology = None
     try:
         with open(scenariofile, "r") as file:
-            parsed = yaml.load(file.read())
+            parsed = yaml.safe_load(file.read())
             topology = parsed.get("root").get("topology")
     except Exception as e:
         panic("Scenario file %s invalid (could not be parsed); %s" % (scenariofile, str(e)))

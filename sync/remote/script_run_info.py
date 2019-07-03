@@ -57,7 +57,7 @@ if len(sys.argv) > 1:
 
     try:
         with open(taskfile, "r") as file:
-            parsed = yaml.load(file.read())
+            parsed = yaml.safe_load(file.read())
     except Exception as e:
         panic("Taskfile %s invalid (could not be parsed); %s" % (taskfile, str(e)))
 
@@ -85,7 +85,7 @@ if len(sys.argv) > 1:
     if resultfile:
         try:
             with open(resultfile, "r") as file:
-                parsed = yaml.load(file.read())
+                parsed = yaml.safe_load(file.read())
 
                 # parsed.get("status") == None is allowed
                 # It won't generate a status line
@@ -109,7 +109,7 @@ if len(sys.argv) > 1:
             out_file.flush()
             subprocess.call(["graph-easy %s" % in_file.name],
                 shell=True, stdin=None, stdout=out_file,
-                stderr=subprocess.STDOUT, cwd="/home/vagrant")
+                stderr=subprocess.STDOUT, cwd=os.environ["HOME"])
             out_file.seek(0)
 
             print side_by_side(information % data, out_file.read(), 1)

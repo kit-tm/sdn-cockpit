@@ -112,7 +112,7 @@ class NetworkOracle(object):
 
         with open(scenario_file, "r") as file:
             data = file.read()
-            self.data = yaml.load(data).get("root")
+            self.data = yaml.safe_load(data).get("root")
 
         if not self.data:
             raise Exception("Scenario file is not initialized")
@@ -511,13 +511,13 @@ class Sender(threading.Thread):
         # enough time to react
         subprocess.call([preexec_cmd],
             shell=True, stdin=None, stdout=FNULL,
-            stderr=subprocess.STDOUT, cwd="/home/vagrant")
+            stderr=subprocess.STDOUT, cwd=os.environ["HOME"])
 
         time.sleep(0.5)
 
         subprocess.call([cmd],
             shell=True, stdin=None, stdout=FNULL,
-            stderr=subprocess.STDOUT, cwd="/home/vagrant")
+            stderr=subprocess.STDOUT, cwd=os.environ["HOME"])
 
         # kill trafgens
         #os.system("ps -ef | grep %s | awk '{print $2}' | sudo xargs kill -9" % cfgfile)
@@ -774,7 +774,7 @@ class Scheduler(threading.Thread):
         with open(tmpfile, "w") as file:
             file.write(yaml.dump(dict(status = status, errors = errors)))
 
-        os.system("runuser -l vagrant -c '/vagrant_data/remote/script_restart_task.sh true %s %s'" % (TASK_FILE, tmpfile))
+        os.system("runuser -l %s -c '/vagrant_data/remote/script_restart_task.sh true %s %s'" % (os.environ["SUDO_USER"], TASK_FILE, tmpfile))
 
 if __name__ == '__main__':
     thread = Scheduler()
