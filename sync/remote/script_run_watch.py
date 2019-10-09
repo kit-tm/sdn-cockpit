@@ -196,14 +196,49 @@ class Watch(threading.Thread):
         super(Watch, self).__init__()
         self.daemon = True
         self.active = True
-        self.files = dict()
+        self.files = dict() # files in src folder
+        self.files_app = dict() # files in app folder
 
     def add_dir(self, path):
         pass
 
+    def check_files(self, files):
+        remove = []
+        found = []
+        for path, timestamp in files.iteritems():
+            try:
+                ft= os.path.getmtime(path)
+                if ft > timestamp:
+                    files[path] = ft
+                    found.append(path)
+
+            except OSError as e:
+                remove.append(path)
+
+        if len(remove) > 0:
+            for path in remove:
+                print colored('.. file removed %s' % path, 'white')
+                del files[path]
+
+        return found
+
+
     def run(self):
 
-        # create watch for all application directories
+        # the wrapper is a ryu application that loads an app from the myapp
+        # folder; it is placed in local/apps/src
+        path_to_wrapper = os.path.join(os.getcwd(), "local", "apps", "src", "lectureApp.py")
+
+        # check for myapps folder (different from src folder)
+        apps = os.path.join(os.getcwd(), "myapps")
+        if os.path.exists(apps):
+            print colored('.. myapps folder present', 'white')
+            for f in glob.glob(os.path.join(apps, "*.py")):
+                self.files_app[f] = os.path.getmtime(f)   
+            #files_app
+
+        # create watch for all files in the application directory
+        # default is local/apps/src
         watchpath = os.path.join(os.getcwd(), "local", "apps", "src")
         print colored('.. watch %s' % watchpath, 'white')
         for f in glob.glob(os.path.join(watchpath, "*.py")):
@@ -212,6 +247,49 @@ class Watch(threading.Thread):
         cnt=0
         # main loop
         while self.active:
+
+            # check for changes in myapps folder first
+            changed = self.check_files(self.files_app)
+            if len(changed) == 1:           
+                processor = CommandProcessor()
+                interpreter = CommandInterpreter()
+                path_to_app = changed[0]
+                with open(path_to_app, "r") as file:
+                    data = file.read()
+                    cmd = processor.run(data, path_to_app)
+                    try:
+                        task = cmd.get('kwargs').get('task')
+                    except AttributeError as e:
+                        # some files might have no tm magic flag (like utils.py)
+                        print colored('.. ignored changed file %s ' % path_to_app, 'white')
+                        continue
+
+                    # print "run task", task, cmd
+                    # print cmd
+                    #interpreter.run(cmd)
+
+                    # now change the wrapper file and replace the
+                    # magic task keyword and the USE_APP global variable
+                    # and trigger the reload for that function
+
+                    lines = []
+                    with open(path_to_wrapper, "r") as wrapper_file:
+                        wrapper = wrapper_file.read()
+                        for line in wrapper.split(os.linesep):
+                            # update task keyword
+                            if line.startswith('#tm'):
+                                line = "#tm task=%s" % task
+                            # update the app file in use
+                            if line.startswith('USE_APP'):
+                                line = "USE_APP = '%s'" % path_to_app
+                            lines.append(line)
+
+                    if len(lines) > 0:
+                        with open(path_to_wrapper, 'w') as wrapper_file:
+                            wrapper_file.write('\n'.join(lines))
+                            pass
+
+
             processor = CommandProcessor()
             interpreter = CommandInterpreter()
 
@@ -230,8 +308,6 @@ class Watch(threading.Thread):
                     ft= os.path.getmtime(path)
                     if ft > timestamp:
                         self.files[path] = ft
-                        print path, "changed"
-
                         with open(path, "r") as file:
                             data = file.read()
                             cmd = processor.run(data, path)
