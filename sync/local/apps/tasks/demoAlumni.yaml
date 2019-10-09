@@ -1,0 +1,18 @@
+task:
+  name: "Demo Alumni-Meeting"
+  description: >
+    Gegeben ist das Beispielnetz rechts. Kommunikation soll hier nur von links nach rechts stattfinden.
+    Host h1 schickt Pakete nach H8, h2 zu h7, h3 zu h6 und h4 zu h5. Nutze SDN, um diese Kommunikation
+    zu ermöglichen!
+  scenario: "demoAlumni"
+  graph: |
+    [ S1 ] -- { start: north } [ H1 ] { origin: S1; offset:  0,-2; }
+    [ S1 ] -- { start: west } [ H2 ] { origin: S1; offset: -2, -1; }
+    [ S1 ] -- { start: west } [ H3 ] { origin: S1; offset: -2, 1; }
+    [ S1 ] -- { start: south } [ H4 ] { origin: S1; offset:  0, 2; }
+    [ S1 ] -- { start: east } [ S2 ] { origin: S1; offset:  2, 0; }
+    [ S2 ] -- { start: east } [ H6 ] { origin: S2; offset:  2, 1; }
+    [ S2 ] -- { start: east } [ H7 ] { origin: S2; offset:  2, -1; }
+    [ S2 ] -- { start: north } [ H8 ] { origin: S2; offset:  0,-2; }
+    [ S2 ] -- { start: south } [ H5 ] { origin: S2; offset:  0, 2; }
+  examination: 0

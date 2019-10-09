@@ -1,0 +1,154 @@
+root:
+  name: "Silent ARP"
+  description: "Handle ARP in controller, no broadcasts."
+  working_directory: "cwd/demoAlumni"
+  topology:
+    switches:
+      - name: s1
+        dpid: 1
+        enabled: True
+      - name: s2
+        dpid: 2
+        enabled: True
+    hosts:
+      - name: h1
+        ip: "10.0.1.0/24"
+      - name: h2
+        ip: "10.0.2.0/24"
+      - name: h3
+        ip: "10.0.3.0/24"
+      - name: h4
+        ip: "10.0.4.0/24"
+      - name: h5
+        ip: "20.0.1.0/24"
+      - name: h6
+        ip: "20.0.2.0/24"
+      - name: h7
+        ip: "20.0.3.0/24"
+      - name: h8
+        ip: "20.0.4.0/24"
+    links:
+      - [h1, s1, 1000]
+      - [h2, s1, 1000]
+      - [h3, s1, 1000]
+      - [h4, s1, 1000]
+      - [s1, s2, 100]
+      - [h5, s2, 1000]
+      - [h6, s2, 1000]
+      - [h7, s2, 1000]
+      - [h8, s2, 1000]
+
+  networks:
+    - name: "h1"
+      alias: "h1"
+      send_from_src:
+        - "10.0.1.0/24"
+      send_to_dst:
+        - "20.0.4.0/24"
+    - name: "h2"
+      alias: "h2"
+      send_from_src:
+        - "10.0.2.0/24"
+      send_to_dst: 
+        - "20.0.3.0/24"   
+    - name: "h3"
+      alias: "h3"
+      send_from_src:
+        - "10.0.3.0/24"
+      send_to_dst: 
+        - "20.0.2.0/24"     
+    - name: "h4"
+      alias: "h4"
+      send_from_src:
+        - "10.0.4.0/24"
+      send_to_dst:
+        - "20.0.1.0/24"  
+    - name: "h5"
+      alias: "h5"
+      recv_from_src: 
+        - "10.0.4.0/24"
+      recv_to_dst:
+        - "20.0.1.0/24"
+    - name: "h6"
+      alias: "h6"
+      recv_from_src:
+        - "10.0.3.0/24"  
+      recv_to_dst:
+        - "20.0.2.0/24"
+    - name: "h7"
+      alias: "h7"
+      recv_from_src:
+        - "10.0.2.0/24"  
+      recv_to_dst:
+        - "20.0.3.0/24"
+    - name: "h8"
+      alias: "h8"
+      recv_from_src:
+        - "10.0.1.0/24"  
+      recv_to_dst:
+        - "20.0.4.0/24"
+
+  # traffic generation
+  traffic:
+    # specify all the profiles that should be used (in parallel!)
+    use_profiles: 
+      - default
+
+  # specify traffic profiles for this scenario
+  traffic_profiles:
+    #  the default profile
+    - name: default
+      # estimated runtime in seconds of this schedule in seconds
+      runtime: 1
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 2
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # specify the parameters for the schedule
+      params: 
+        # generate x events in total
+        events: 10
+        # randomly select time range for a event between [a,b]
+        range_time: [1,1] 
+        # randomly select the amount of packets from the given array
+        choice_packets: [2]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+
+  # traffic_profiles:
+  #   #  the default profile
+  #   - name: default
+  #     # estimated runtime in seconds of this schedule in seconds
+  #     runtime: 1
+  #     # grace time in seconds before performing a traffic analysis
+  #     wait_for_analaysis: 3
+  #     # automatically create the schedule with the parameters specified
+  #     type: auto
+  #     # specify the parameters for the schedule
+  #     params: 
+  #       # generate x events in total
+  #       events: 1
+  #       # randomly select time range for a event between [a,b]
+  #       range_time: [1,1] 
+  #       # randomly select the amount of packets from the given array
+  #       choice_packets: [1]
+  #       # randomly select a inter arrival time from the given array
+  #       choice_iat: ["1us"]
+  #       # randomly select a priority from the given array
+  #       choice_priority: [1]
+
+  # more advanced traffic generation parameters
+  trafgen:
+
+    # Specifies the (random) ips that are used in the traffic generator.
+    # This is required for setting up the network oracle in 
+    # the controller. The file is stored in the working directory of the
+    # scenario so this can be the same for all scenarios (no need to change).
+    deployment_file: "oracle/deployment.yaml"
+    
+    # Artifical delay for udp streams. The first packet is
+    # sent immediatly and all other packets are sent after a timeout
+    # that can be specified with this variable.
+    udp_first_packet_delay: 0.5
