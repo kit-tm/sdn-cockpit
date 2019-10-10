@@ -15,6 +15,7 @@
         margin-left: 5%;
         margin-right: 5%;
         padding-bottom: 10px;
+        margin-bottom: 30px;
     }
     th {
         font-weight: bold;
@@ -23,13 +24,15 @@
         padding: 10px;
         text-align: center;
     }
+    input {
+        margin: 4px;
+        width: 250px;
+    }
     </style>
   <meta charset="utf-8">
   <title>Say hello</title>
 </head>
 <body>
-    
-
     {% for switch in switches %}
     <h1>Switch {{ switch.id }}</h1>
     <table>
@@ -45,7 +48,6 @@
             <th>Alive</th>
             <th>Timeout (hard|idle)</th>
             <th>Processed packets</th>
-
             <th style="color: yellow">in_port</th>
             <th style="color: yellow">mac_src</th>
             <th style="color: yellow">mac_dst</th>
@@ -53,9 +55,6 @@
             <th style="color: yellow">ip_dst</th>
             <th style="color: yellow">tcp_src</th>
             <th style="color: yellow">tcp_dst</th>
-
-            
-
             <th style="color: red">ACTION</td>
         </tr>
         {% for flow in switch.flows %}
@@ -80,9 +79,19 @@
     {% endfor %}
 
 
+    <div style="border: 1px dashed white; padding: 20px; width: 60%; margin: auto;">
+        <h3>ATTENTION: Klicking any of the buttons will delete your code!!!</h3>
+        <form action="reset" method="get">
+          <input type="submit" value="Reset Demo">
+        </form>
 
-    <form action="flowtable" method="get">
-      <input type="submit" value="Reset Demo">
-    </form>
+        <form action="solution1" method="get">
+          <input type="submit" value="Load Proactive Solution">
+        </form>   
+
+        <form  action="solution2" method="get">
+          <input type="submit" value="Load Reactive Solution">
+        </form>   
+    </div>
 </body>
 </html>

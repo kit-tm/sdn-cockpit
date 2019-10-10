@@ -3,11 +3,39 @@
 <head>
   <meta charset="utf-8">
   <title>Say hello</title>
+    <style>
+    body {
+        background-color: black;
+        color: white;
+        text-align: center;
+        font-family: monospace; 
+    }
+    .logo {
+        width: 946px;
+        height: 339px;
+        margin: auto;
+        background: url("static/logo_black.png") no-repeat 0 0 / cover;
+    }
+    table {
+        width: 90%;
+        border: 1px solid white;
+        margin-left: 5%;
+        margin-right: 5%;
+        padding-bottom: 10px;
+    }
+    th {
+        font-weight: bold;
+    }
+    th, td {
+        padding: 10px;
+        text-align: center;
+    }
+    </style>
 </head>
 <body>
-    <h1>Hello 2</h1>
-    <form action="flowtable" method="get">
-      <input type="submit" value="SEND">
-    </form>
+    
+    <div class="logo"></div>
+    <iframe style="border: 0px; width: 100%; height: 1000px;" src="/flowtable"></iframe> 
+
 </body>
 </html>

@@ -718,19 +718,19 @@ class Scheduler(threading.Thread):
                 if accepted > expected * (1.0 + tolerance):
                     status = "failure"
                     msg = err_exp.format(expected, host, accepted)
-                    feedback.append(("red", msg))
+                    feedback.append(list(("red", msg)))
                 elif accepted < expected * (1.0 - tolerance):
                     status = "failure"
                     msg = err_exp.format(expected, host, accepted)
-                    feedback.append(("red", msg))
+                    feedback.append(list(("red", msg)))
                 elif abs(accepted - expected) > 1:
                     msg = infomsg.format(expected, host, accepted)
-                    feedback.append(("green", msg))
+                    feedback.append(list(("green", msg)))
 
                 if rejected != 0:
                     status = "failure"
                     msg = err_unexp.format(rejected, host)
-                    feedback.append(("red", msg))
+                    feedback.append(list(("red", msg)))
         else:
             # strict evaluation
             status = "success"
@@ -744,12 +744,12 @@ class Scheduler(threading.Thread):
                 if abs(accepted - expected) > tolerance:
                     status = "failure"
                     msg = err_exp.format(expected, host, accepted)
-                    feedback.append(("red", msg))
+                    feedback.append(list(("red", msg)))
 
                 if rejected != 0:
                     status = "failure"
                     msg = err_unexp.format(rejected, host)
-                    feedback.append(("red", msg))
+                    feedback.append(list(("red", msg)))
 
         print ""
 

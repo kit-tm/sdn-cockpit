@@ -3,8 +3,8 @@
 # This script will start a webserver to display the flow table of switch s1 and s2
 # The switches are currently hard-coded (for demo purposes), feel free to change the
 # configuration if necessary (SUPERVISE_SWITCHES parameter).
-import os, subprocess
-from flask import Flask, render_template 
+import os, subprocess, shutil
+from flask import Flask, render_template, send_from_directory, redirect
 app = Flask(__name__)
 
 SUPERVISE_SWITCHES = ['s1', 's2']
@@ -13,6 +13,34 @@ SUPERVISE_SWITCHES = ['s1', 's2']
 def main():
     return render_template('main.html')
 
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    root_dir = os.path.dirname(os.getcwd())
+    return send_from_directory(os.path.join(root_dir, 'static'), filename)
+
+@app.route('/reset')
+def reset():
+    root_dir = os.path.dirname(os.getcwd())
+    template = os.path.join(root_dir, 'myapps', 'demo_copy.py')
+    workingfile = os.path.join(root_dir, 'myapps', 'demo.py')
+    shutil.copy(template, workingfile)
+    return redirect('/flowtable')
+
+@app.route('/solution1')
+def solution1():
+    root_dir = os.path.dirname(os.getcwd())
+    template = os.path.join(root_dir, 'myapps', 'demo_solution1.py')
+    workingfile = os.path.join(root_dir, 'myapps', 'demo.py')
+    shutil.copy(template, workingfile)
+    return redirect('/flowtable')
+
+@app.route('/solution2')
+def solution2():
+    root_dir = os.path.dirname(os.getcwd())
+    template = os.path.join(root_dir, 'myapps', 'demo_solution2.py')
+    workingfile = os.path.join(root_dir, 'myapps', 'demo.py')
+    shutil.copy(template, workingfile)
+    return redirect('/flowtable')
 
 class Switch():
     def __init__(self, id):

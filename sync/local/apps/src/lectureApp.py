@@ -43,6 +43,9 @@ class Switch():
     def flood(self, pkt):
         self.wrapper.send_pkt(self.datapath, pkt.data, port = ofproto.OFPP_FLOOD)
 
+    def send_packet(self, pkt, port):
+        self.wrapper.send_pkt(self.datapath, pkt.data, port = port)
+           
     def install_rule(self, **kwargs):
 
         ofproto = self.datapath.ofproto
