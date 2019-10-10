@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta http-equiv="refresh" content="1; URL=flowtable">
+<head>
+    <style>
+    body {
+        background-color: black;
+        color: white;
+        text-align: center;
+        font-family: monospace; 
+    }
+    table {
+        width: 90%;
+        border: 1px solid white;
+        margin-left: 5%;
+        margin-right: 5%;
+        padding-bottom: 10px;
+    }
+    th {
+        font-weight: bold;
+    }
+    th, td {
+        padding: 10px;
+        text-align: center;
+    }
+    </style>
+  <meta charset="utf-8">
+  <title>Say hello</title>
+</head>
+<body>
+    
+
+    {% for switch in switches %}
+    <h1>Switch {{ switch.id }}</h1>
+    <table>
+        <tr>
+            <th colspan="7" style="width: 20%"></td>
+            <th colspan="6" style="width: 60% color: yellow">MATCH</td>
+            <th style="color: red"></td>
+        </tr>
+        <tr>
+            <th></th>
+            <th>Table</th>
+            <th>Prio</th>
+            <th>Alive</th>
+            <th>Timeout (hard|idle)</th>
+            <th>Processed packets</th>
+
+            <th style="color: yellow">in_port</th>
+            <th style="color: yellow">mac_src</th>
+            <th style="color: yellow">mac_dst</th>
+            <th style="color: yellow">ip_src</th>
+            <th style="color: yellow">ip_dst</th>
+            <th style="color: yellow">tcp_src</th>
+            <th style="color: yellow">tcp_dst</th>
+
+            
+
+            <th style="color: red">ACTION</td>
+        </tr>
+        {% for flow in switch.flows %}
+        <tr>
+            <td>#{{ flow.id }}</td>
+            <td>{{ flow.table }}</td>
+            <td>{{ flow.priority }}</td>
+            <td>{{ flow.duration }}</td>
+            <td>{{ flow.idle_timeout }}|{{ flow.hard_timeout }}</td>
+            <td>{{ flow.n_packets }}</td>
+            <td>{{ flow.in_port }}</td>
+            <td>{{ flow.dl_src }}</td>
+            <td>{{ flow.dl_dst }}</td>
+            <td>{{ flow.nw_src }}</td>
+            <td>{{ flow.nw_dst }}</td>
+            <td>{{ flow.tp_src }}</td>
+            <td>{{ flow.tp_dst }}</td>  
+            <td>{{ flow.actions }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
+
+
+
+    <form action="flowtable" method="get">
+      <input type="submit" value="Reset Demo">
+    </form>
+</body>
+</html>
