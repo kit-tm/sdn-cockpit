@@ -31,11 +31,11 @@ class Rule():
         self.prio = 100
 
     # add a match
-    def MATCH(self, key, value):
+    def MATCH(self, key, value=''):
         self.matches[key] = value
 
     # add an action
-    def ACTION(self, key, value):
+    def ACTION(self, key, value=''):
         self.actions[key] = value
 
     # set the flow table

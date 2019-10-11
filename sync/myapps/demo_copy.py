@@ -13,4 +13,4 @@ class Application():
 
     # packet in
     def on_packet_in(self, packet, switch, inport ):
-        print inport, "switch", switch.id, packet
+        print "inport", inport, "switch", switch.id, packet

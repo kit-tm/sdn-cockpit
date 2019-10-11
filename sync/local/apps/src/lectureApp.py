@@ -33,6 +33,9 @@ MATCHES = dict(
     MAC_SRC = 'eth_src',
     MAC_DST = 'eth_dst'
 )
+
+
+
 class Switch():
 
     def __init__(self, wrapper, datapath):
@@ -66,6 +69,9 @@ class Switch():
 
         match_dict = {}
         for k,v in rule.matches.iteritems():
+            if k == '*':
+                match_dict = {}
+                break   
             if k in MATCHES:
                 match_dict[MATCHES[k]] = v
         
@@ -84,6 +90,9 @@ class Switch():
             if k == 'DROP':
                 actions = []
                 break
+            if k == 'CONTROLLER':
+                actions.append(parser.OFPActionOutput(ofproto.OFPP_CONTROLLER))
+
 
         match = parser.OFPMatch(**match_dict)
 
@@ -157,7 +166,14 @@ class Packet():
             self.type = 'ipv6 (%x)' % (eth.ethertype)
             self.ipv6_src = _ipv6.src
             self.ipv6_dst = _ipv6.dst
-
+            
+        # to be consistent with lecture
+        self.IP_SRC = self.ip_src
+        self.IP_DST = self.ip_dst
+        self.MAC_SRC = self.mac_src
+        self.MAC_DST = self.mac_dst
+        self.IPV6_SRC = self.ipv6_src
+        self.IPV6_DST = self.ipv6_dst
 
     def __str__(self):
         if self.is_arp:
