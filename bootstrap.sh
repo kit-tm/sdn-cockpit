@@ -48,7 +48,7 @@ chown vagrant:vagrant /home/vagrant/.tmux.conf
 echo '[ "$TERM" == "cygwin" ] && export TERM=cygwinB19' >> /home/vagrant/.profile
 
 # Install python packages
-sudo pip install ansiwrap termcolor terminaltables Pyro4 requests psutil ipaddr pyyaml
+sudo pip install ansiwrap termcolor terminaltables Pyro4 requests psutil ipaddr pyyaml tinyrpc==0.9.4
 
 # Remove unused directories
 sudo rm -rf \
