@@ -22,6 +22,9 @@ python-pip \
 tcpdump \
 tmux
 
+# Newer version of oslo.config is incompatible with python 2.7 but required by ryu.
+pip install -Iv oslo.config==2.5.0
+
 # Install ryu controller framework
 git clone https://github.com/osrg/ryu.git
 pushd ryu
