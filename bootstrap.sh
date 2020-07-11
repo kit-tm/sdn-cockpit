@@ -25,10 +25,14 @@ tmux
 # Newer version of oslo.config is incompatible with python 2.7 but required by ryu.
 pip install -Iv oslo.config==2.5.0
 
+# Manually install python2.7-compatible versions of other dependencies for ryu.
+pip install -Iv zipp==0.4
+pip install -Iv configparser==3.5.0
+pip install -Iv tinyrpc==0.9
+
 # Install ryu controller framework
-git clone https://github.com/osrg/ryu.git
 pushd ryu
-sudo -H pip install .
+sudo -H pip install ryu
 popd
 
 # Install mininet
