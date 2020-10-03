@@ -1,14 +1,14 @@
 # This is a wrapper file for the apps that are located in the
 # myapps folder. The file is changed automatically (see script_run_watch.py)
 # so do not change anything here unless you know what you are doing!
-# The tm task line and the USE_APP line below are overwritten every time 
+# The tm task line and the USE_APP line below are overwritten every time
 # a .py file in the myapps folder is changed.
 
 # --------------------<DO NOT CHANGE THIS>
 
 #tm task=demoAlumni
 
-USE_APP = '/vagrant_data/myapps/demo.py'
+USE_APP = '/vagrant_data/myapps/demo_solution1.py'
 
 # --------------------</DO NOT CHANGE THIS>
 
@@ -42,13 +42,13 @@ class Switch():
         self.wrapper = wrapper # points to the wrapper (not the app in the myapps folder!)
         self.datapath = datapath # datapath object to communicate with the switch
         self.id = datapath.id
-        
+
     def flood(self, pkt):
         self.wrapper.send_pkt(self.datapath, pkt.data, port = ofproto.OFPP_FLOOD)
 
     def send_packet(self, pkt, port):
         self.wrapper.send_pkt(self.datapath, pkt.data, port = port)
-           
+
     def install_rule(self, **kwargs):
 
         ofproto = self.datapath.ofproto
@@ -61,25 +61,25 @@ class Switch():
         self.wrapper.set_flow(self.datapath, match, [action], priority = priority)
 
     def execute_rule(self, rule):
-        print ">> install new rule in switch %d: match=%s, action=%s" % (
-            self.id, str(rule.matches), str(rule.actions))
+        print(">> install new rule in switch %d: match=%s, action=%s" % (
+            self.id, str(rule.matches), str(rule.actions)))
 
         actions = []
         #action = parser.OFPActionOutput(kwargs.get('action').get('output'))
 
         match_dict = {}
-        for k,v in rule.matches.iteritems():
+        for k,v in rule.matches.items():
             if k == '*':
                 match_dict = {}
-                break   
+                break
             if k in MATCHES:
                 match_dict[MATCHES[k]] = v
-        
+
         # add eth_type match in case of ip
         if 'IP_DST' in rule.matches or 'IP_SRC' in rule.matches:
             match_dict['eth_type'] = ether_types.ETH_TYPE_IP
 
-        for k, v in rule.actions.iteritems():
+        for k, v in rule.actions.items():
             if k == 'OUTPUT':
                 # output flood
                 if v == 'flood' or v == 'FLOOD':
@@ -166,7 +166,7 @@ class Packet():
             self.type = 'ipv6 (%x)' % (eth.ethertype)
             self.ipv6_src = _ipv6.src
             self.ipv6_dst = _ipv6.dst
-            
+
         # to be consistent with lecture
         self.IP_SRC = self.ip_src
         self.IP_DST = self.ip_dst
@@ -182,27 +182,27 @@ class Packet():
                     self.type, self.mac_src, self.mac_dst, self.arp_ip_dst)
             if self.arp_opcode == 2:
                 return "type=%s [ARP reply] mac_src=%s mac_dst=%s  I do! (%s)" % (
-                    self.type, self.mac_src, self.mac_dst, self.arp_mac_src) 
+                    self.type, self.mac_src, self.mac_dst, self.arp_mac_src)
                 return "type=%s [ARP opcode=%d] mac_src=%s mac_dst=%s  who has %s?" % (
-                    self.type,  self.arp_opcode, self.mac_src, self.mac_dst)  
+                    self.type,  self.arp_opcode, self.mac_src, self.mac_dst)
         if self.is_icmp:
             if self.icmp_type == 8 and self.icmp_code == 0:
                 return "type=%s [ICMP request] ip_src=%s ip_dst=%s" % (
                     self.type, self.ip_src, self.ip_dst)
             if self.icmp_type == 0 and self.icmp_code == 0:
                 return "type=%s [ICMP reply] ip_src=%s ip_dst=%s" % (
-                    self.type, self.ip_src, self.ip_dst)  
+                    self.type, self.ip_src, self.ip_dst)
             if self.icmp_type == 3:
                 return "type=%s [ICMP destination unreachable] ip_src=%s ip_dst=%s" % (
-                    self.type, self.ip_src, self.ip_dst) 
+                    self.type, self.ip_src, self.ip_dst)
             if self.icmp_type == 9:
                 return "type=%s [ICMP router advertisement] ip_src=%s ip_dst=%s" % (
-                    self.type, self.ip_src, self.ip_dst) 
+                    self.type, self.ip_src, self.ip_dst)
             if self.icmp_type == 10:
                 return "type=%s [ICMP router solicitation] ip_src=%s ip_dst=%s" % (
-                    self.type, self.ip_src, self.ip_dst)         
+                    self.type, self.ip_src, self.ip_dst)
             return "type=%s [ICMP type=%d code=%d] ip_src=%s ip_dst=%s" % (
-                self.type, self.ip_src, self.ip_dst, self.icmp_type, self.icmp_code)                  
+                self.type, self.ip_src, self.ip_dst, self.icmp_type, self.icmp_code)
         if self.is_ipv4:
             return "type=%s ip_src=%s ip_dst=%s" % (self.type, self.ip_src, self.ip_dst)
         if self.is_ipv6:
@@ -220,7 +220,7 @@ class LectureApp(app_manager.RyuApp):
         super(LectureApp, self).__init__(*args, **kwargs)
         try:
             # the app needs access to some imports
-            sys.path.insert(0,'/vagrant_data/myapps') 
+            sys.path.insert(0,'/vagrant_data/myapps')
             # now load the app
             app = imp.load_source('app', USE_APP)
             self.app = app.Application()
@@ -239,15 +239,15 @@ class LectureApp(app_manager.RyuApp):
         self.total_packets = 0
 
     def info(self, text):
-        print "*"*20
-        print "* %s" % text
-        print "*"*20
+        print("*"*20)
+        print("* %s" % text)
+        print("*"*20)
 
 
     # Install a flow rule into the switch
     def set_flow(self, datapath, match, actions, priority=0, hard_timeout=600, idle_timeout=60):
         inst    = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
-        flowmod = parser.OFPFlowMod(datapath, 
+        flowmod = parser.OFPFlowMod(datapath,
             match=match,
             instructions=inst,
             priority=priority,
@@ -259,7 +259,7 @@ class LectureApp(app_manager.RyuApp):
     def send_pkt(self, datapath, data, port=ofproto.OFPP_FLOOD):
         actions = [parser.OFPActionOutput(port)]
         out     = parser.OFPPacketOut(
-            datapath=datapath, 
+            datapath=datapath,
             actions=actions,
             in_port=datapath.ofproto.OFPP_CONTROLLER,
             data=data,
@@ -279,7 +279,7 @@ class LectureApp(app_manager.RyuApp):
         self.app.on_connect(switch)
 
         # install the default-to-controller-flow
-        self.set_flow(datapath, 
+        self.set_flow(datapath,
             parser.OFPMatch(), # match on every packet
             [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER)], # action is sent_to_controller
             hard_timeout=0, # never delete this flow
@@ -302,8 +302,8 @@ class LectureApp(app_manager.RyuApp):
             of the rules deployed on a switch. The controller can
             take subsequent action to update the switch flowtable entries
             and handle the packet itself.
-        """      
-        self.total_packets += 1 
+        """
+        self.total_packets += 1
         msg = ev.msg
         datapath = msg.datapath
         data = msg.data
@@ -325,7 +325,7 @@ class LectureApp(app_manager.RyuApp):
             to protect the controller and prevent it from being flooded
             with packet_in messages.
         """
-        if not self.packets_by_ip.has_key(src_ip):
+        if not src_ip in self.packets_by_ip:
             self.packets_by_ip[src_ip] = 0
 
         self.packets_by_ip[src_ip] += 1

@@ -15,4 +15,4 @@ if [ "$1" = true ]; then
     tmux send-keys -t $SESSION.$PANE_INFO "clear" C-m
 fi
 
-tmux send-keys -t $SESSION.$PANE_INFO "python remote/script_run_info.py "$TASK" "$RESULT C-m
+tmux send-keys -t $SESSION.$PANE_INFO "python3 remote/script_run_info.py "$TASK" "$RESULT C-m

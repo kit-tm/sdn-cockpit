@@ -11,19 +11,19 @@ import os
 from functools import partial
 
 def panic(*msg):
-    print ""
-    print "    " + colored("*"*20+" ERROR "+"*"*20, "white", "on_red")
+    print("")
+    print("    " + colored("*"*20+" ERROR "+"*"*20, "white", "on_red"))
     for m in msg:
-        print "    " + m
-    print "    " + colored("*"*47, "white", "on_red")
+        print("    " + m)
+    print("    " + colored("*"*47, "white", "on_red"))
     exit(1)
 
 def info(*msg):
-    print ""
-    print "    " + colored("*"*30, "white", "on_yellow")
+    print("")
+    print("    " + colored("*"*30, "white", "on_yellow"))
     for m in msg:
-        print "    " + m
-    print "    " + colored("*"*30, "white", "on_yellow")
+        print("    " + m)
+    print("    " + colored("*"*30, "white", "on_yellow"))
 
 if len(sys.argv) > 1:
     scenariofile = sys.argv[1]
@@ -49,7 +49,7 @@ if len(sys.argv) > 1:
     # if the topology is changed
     topologyfile = os.path.join(os.getcwd(), "tmp_topology.mn")
     if os.path.exists(topologyfile):
-        os.remove(topologyfile) 
+        os.remove(topologyfile)
     with open(topologyfile, "w") as file:
         file.write(yaml.dump(topology))
 
@@ -93,10 +93,10 @@ if len(sys.argv) > 1:
     """
     # deployment file
     for itemname, item in net.items():
-        print item.intfList()
+        print(item.intfList())
     topologyfile2 = os.path.join(os.getcwd(), "tmp_topology_data.mn")
     if os.path.exists(topologyfile2):
-        os.remove(topologyfile2) 
+        os.remove(topologyfile2)
     with open(topologyfile2, "w") as file:
         file.write("sd")
     """

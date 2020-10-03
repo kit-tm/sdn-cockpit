@@ -28,7 +28,7 @@ else
     log " + start controller"
 fi
 
-tmux send-keys -t $SESSION.$PANE_CONTROLLER 'python -m py_compile '$APP' && ryu-manager --use-stderr --nouse-syslog --log-conf "" '$APP C-m
+tmux send-keys -t $SESSION.$PANE_CONTROLLER 'python3 -m py_compile '$APP' && ryu-manager --use-stderr --nouse-syslog --log-conf "" '$APP C-m
 log " + waiting for controller to start"
 wait_condition "port_exists localhost 6633" 5
 status=$?

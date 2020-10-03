@@ -141,14 +141,14 @@ class CommandInterpreter(object):
 
         # reload controller (always)
         controller = self.get_path_controller(cmd.get("path"))
-        print colored('.. controller: %s' % controller, 'white')
+        print(colored('.. controller: %s' % controller, 'white'))
 
         if not kwargs:
-            print colored('.. controller: not an application', 'white')
+            print(colored('.. controller: not an application', 'white'))
             return
 
         # a task is specified
-        if kwargs.has_key("task"):
+        if "task" in kwargs:
             # reload task
             task = self.get_path_task(kwargs.get("task"))
             # get scenario file
@@ -161,14 +161,14 @@ class CommandInterpreter(object):
                         scenario = parsed.get("task").get("scenario")
                         scenario = self.get_path_scenario(scenario)
                 except Exception as e:
-                    print ".. error: couldn't extract scenario file from task"
+                    print(".. error: couldn't extract scenario file from task")
         # scenario is specified
-        if kwargs.has_key("scenario"):
+        if "scenario" in kwargs:
             name =kwargs.get("scenario")
-            print colored('.. scenario: %s' %name, 'white')
+            print(colored('.. scenario: %s' %name, 'white'))
             scenario = self.get_path_scenario(name)
 
-        print ""
+        print("")
 
         topology_change = self.check_topology(scenario)
         if topology_change:
@@ -205,7 +205,7 @@ class Watch(threading.Thread):
     def check_files(self, files):
         remove = []
         found = []
-        for path, timestamp in files.iteritems():
+        for path, timestamp in files.items():
             try:
                 ft= os.path.getmtime(path)
                 if ft > timestamp:
@@ -217,7 +217,7 @@ class Watch(threading.Thread):
 
         if len(remove) > 0:
             for path in remove:
-                print colored('.. file removed %s' % path, 'white')
+                print(colored('.. file removed %s' % path, 'white'))
                 del files[path]
 
         return found
@@ -232,15 +232,15 @@ class Watch(threading.Thread):
         # check for myapps folder (different from src folder)
         apps = os.path.join(os.getcwd(), "myapps")
         if os.path.exists(apps):
-            print colored('.. myapps folder present', 'white')
+            print(colored('.. myapps folder present', 'white'))
             for f in glob.glob(os.path.join(apps, "*.py")):
-                self.files_app[f] = os.path.getmtime(f)   
+                self.files_app[f] = os.path.getmtime(f)
             #files_app
 
         # create watch for all files in the application directory
         # default is local/apps/src
         watchpath = os.path.join(os.getcwd(), "local", "apps", "src")
-        print colored('.. watch %s' % watchpath, 'white')
+        print(colored('.. watch %s' % watchpath, 'white'))
         for f in glob.glob(os.path.join(watchpath, "*.py")):
             self.files[f] = os.path.getmtime(f)
 
@@ -250,7 +250,7 @@ class Watch(threading.Thread):
 
             # check for changes in myapps folder first
             changed = self.check_files(self.files_app)
-            if len(changed) == 1:           
+            if len(changed) == 1:
                 processor = CommandProcessor()
                 interpreter = CommandInterpreter()
                 path_to_app = changed[0]
@@ -261,11 +261,11 @@ class Watch(threading.Thread):
                         task = cmd.get('kwargs').get('task')
                     except AttributeError as e:
                         # some files might have no tm magic flag (like utils.py)
-                        print colored('.. ignored changed file %s ' % path_to_app, 'white')
+                        print(colored('.. ignored changed file %s ' % path_to_app, 'white'))
                         continue
 
-                    # print "run task", task, cmd
-                    # print cmd
+                    # print("run task", task, cmd)
+                    # print(cmd)
                     #interpreter.run(cmd)
 
                     # now change the wrapper file and replace the
@@ -299,11 +299,11 @@ class Watch(threading.Thread):
                 active = self.files.keys()
                 for f in glob.glob(os.path.join(watchpath, "*.py")):
                     if not f in active:
-                        print colored('.. file added %s' % f, 'white')
+                        print(colored('.. file added %s' % f, 'white'))
                         self.files[f] = os.path.getmtime(f)
 
             remove = []
-            for path, timestamp in self.files.iteritems():
+            for path, timestamp in self.files.items():
                 try:
                     ft= os.path.getmtime(path)
                     if ft > timestamp:
@@ -318,7 +318,7 @@ class Watch(threading.Thread):
 
             if len(remove) > 0:
                 for path in remove:
-                    print colored('.. file removed %s' % path, 'white')
+                    print(colored('.. file removed %s' % path, 'white'))
                     del self.files[path]
 
             time.sleep(0.1)

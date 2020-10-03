@@ -131,7 +131,7 @@ class DemoApplication(SDNApplication):
             to protect the controller and prevent it from being flooded
             with packet_in messages.
         """
-        if not self.packets_by_ip.has_key(src_ip):
+        if not src_ip in self.packets_by_ip:
             self.packets_by_ip[src_ip] = 0
 
         self.packets_by_ip[src_ip] += 1

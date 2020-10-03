@@ -19,23 +19,23 @@ def side_by_side(a, b, pad):
     max_line = max([ansilen(a_line) for a_line in a_lines])
     return '\n'.join([ansiljust(a_line, max_line+pad) + b_line
                       for a_line, b_line
-                      in itertools.izip_longest(a_lines, b_lines, fillvalue='')])
+                      in itertools.zip_longest(a_lines, b_lines, fillvalue='')])
 
 def panic(*msg):
-    print ""
-    print "    " + colored("*"*20+" ERROR "+"*"*20, "white", "on_red")
+    print("")
+    print("    " + colored("*"*20+" ERROR "+"*"*20, "white", "on_red"))
     for m in msg:
-        print "    " + m
-    print "    " + colored("*"*47, "white", "on_red")
+        print("    " + m)
+    print("    " + colored("*"*47, "white", "on_red"))
     exit(1)
 
 
 def info(*msg):
-    print ""
-    print "    " + colored("*"*30, "white", "on_yellow")
+    print("")
+    print("    " + colored("*"*30, "white", "on_yellow"))
     for m in msg:
-        print "    " + m
-    print "    " + colored("*"*30, "white", "on_yellow")
+        print("    " + m)
+    print("    " + colored("*"*30, "white", "on_yellow"))
 
 if len(sys.argv) > 1:
     taskfile = sys.argv[1]
@@ -46,10 +46,10 @@ if len(sys.argv) > 1:
 
     if not os.path.exists(taskfile):
         info("There is currently no task selected")
-        print ""
-        print "    Select an application (or create a new one) and add the"
-        print "    [#tm task=taskname] makro to start task. Please contact your"
-        print "    supervisor if there are any problems!"
+        print("")
+        print("    Select an application (or create a new one) and add the")
+        print("    [#tm task=taskname] makro to start task. Please contact your")
+        print("    supervisor if there are any problems!")
         while True:
             time.sleep(10) # don't return
 
@@ -102,7 +102,7 @@ if len(sys.argv) > 1:
         data['result'] = colored("IN PROGRESS", "yellow")
 
     if "graph" in task:
-        with tempfile.NamedTemporaryFile() as in_file, tempfile.TemporaryFile() as out_file:
+        with tempfile.NamedTemporaryFile(mode = "w") as in_file, tempfile.TemporaryFile(mode = "w+") as out_file:
             in_file.write(task['graph'])
             in_file.flush()
             out_file.write("\n%s\n\n" % colored("Topology:", attrs=["bold"]))
@@ -112,9 +112,9 @@ if len(sys.argv) > 1:
                 stderr=subprocess.STDOUT, cwd=os.environ["HOME"])
             out_file.seek(0)
 
-            print side_by_side(information % data, out_file.read(), 1)
+            print(side_by_side(information % data, out_file.read(), 1))
     else:
-        print information % data
+        print(information % data)
 
     while True:
         time.sleep(10) # don't return

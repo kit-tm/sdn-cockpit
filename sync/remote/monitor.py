@@ -148,7 +148,7 @@ class Monitor(object):
 
         p = self.execute(cmd, stdin = self.pcapfile, stdout = PIPE)
 
-        return int(''.join(p.stdout))
+        return int(p.stdout.readlines()[0].decode('utf-8'))
 
 
 if __name__ == '__main__':

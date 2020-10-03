@@ -49,7 +49,7 @@ remote/script_restart_task.sh false BootDummy
 remote/script_restart_mininet.sh false $DEFAULT_SCENARIO
 remote/script_restart_scenario.sh false $DEFAULT_SCENARIO
 tmux select-pane -t 4
-tmux send-keys "python remote/script_run_watch.py" C-m
+tmux send-keys "python3 remote/script_run_watch.py" C-m
 
 # preselect mininet pane
 tmux select-pane -t $SESSION.$PANE_MININET

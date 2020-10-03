@@ -15,14 +15,14 @@ class SDNApplication(app_manager.RyuApp):
         super(SDNApplication, self).__init__(*args, **kwargs)
 
     def info(self, text):
-        print "*"*20
-        print "* %s" % text
-        print "*"*20
+        print("*"*20)
+        print("* %s" % text)
+        print("*"*20)
 
     # Set a flow on a switch
     def set_flow(self, datapath, match, actions, priority=0, hard_timeout=600, idle_timeout=60):
         inst    = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
-        flowmod = parser.OFPFlowMod(datapath, 
+        flowmod = parser.OFPFlowMod(datapath,
             match=match,
             instructions=inst,
             priority=priority,
@@ -34,13 +34,13 @@ class SDNApplication(app_manager.RyuApp):
     def send_pkt(self, datapath, data, port=ofproto.OFPP_FLOOD):
         actions = [parser.OFPActionOutput(port)]
         out     = parser.OFPPacketOut(
-            datapath=datapath, 
+            datapath=datapath,
             actions=actions,
             in_port=datapath.ofproto.OFPP_CONTROLLER,
             data=data,
             buffer_id=ofproto.OFP_NO_BUFFER)
         datapath.send_msg(out)
-        
+
     # New switch
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     # Make sure the name of the function does not collide with those
@@ -50,10 +50,10 @@ class SDNApplication(app_manager.RyuApp):
         msg      = ev.msg
         datapath = msg.datapath
 
-        print "switch with id {:d} connected".format(datapath.id)
+        print("switch with id {:d} connected".format(datapath.id))
 
         # install the default-to-controller-flow
-        self.set_flow(datapath, 
+        self.set_flow(datapath,
             parser.OFPMatch(), # match on every packet
             [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER)], # action is sent_to_controller
             hard_timeout=0, # never delete this flow

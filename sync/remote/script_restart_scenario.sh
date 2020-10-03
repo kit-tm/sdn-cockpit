@@ -14,7 +14,7 @@ if [ "$1" = true ]; then
     log " + stop currently running scenario"
     tmux send-keys -t $SESSION.$PANE_SCENARIO C-c
     sleep 0.2 #TODO higher grace period?
-    ps -ef | grep "sudo python remote/proxy.py" | awk '{print $2}' | sudo xargs kill -9
+    ps -ef | grep "sudo python3 remote/proxy.py" | awk '{print $2}' | sudo xargs kill -9
     tmux send-keys -t $SESSION.$PANE_SCENARIO "clear" C-m
     sleep 0.2 #TODO unnecessary?
 
@@ -23,4 +23,4 @@ else
     log " + start scenario"
 fi
 
-tmux send-keys -t $SESSION.$PANE_SCENARIO "sudo python remote/proxy.py "$SCENARIO" "$TASK C-m
+tmux send-keys -t $SESSION.$PANE_SCENARIO "sudo python3 remote/proxy.py "$SCENARIO" "$TASK C-m

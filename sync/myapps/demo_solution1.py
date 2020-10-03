@@ -5,11 +5,11 @@ from utils import Rule, send_rule
 class Application():
 
     def __init__(self):
-        print "+++++++++ Proactive Solution"
+        print("+++++++++ Proactive Solution")
 
     # new switch
-    def on_connect(self, switch):  
-        print "switch connected", switch.id
+    def on_connect(self, switch):
+        print("switch connected", switch.id)
 
         if switch.id == 1:
             r = Rule()

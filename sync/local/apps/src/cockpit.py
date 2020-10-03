@@ -28,7 +28,7 @@ class CockpitApp(app_manager.RyuApp):
             existing one will replace the existing flow.
         """
         flowmod = parser.OFPFlowMod(
-            dp, 
+            dp,
             match = match,
             instructions = [
                 parser.OFPInstructionActions(
@@ -48,7 +48,7 @@ class CockpitApp(app_manager.RyuApp):
             a packet from the controller.
         """
         out = parser.OFPPacketOut(
-            datapath = dp, 
+            datapath = dp,
             actions = [parser.OFPActionOutput(port)],
             in_port = dp.ofproto.OFPP_CONTROLLER,
             data = data,
@@ -56,7 +56,7 @@ class CockpitApp(app_manager.RyuApp):
         )
 
         dp.send_msg(out)
-        
+
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     # Make sure the name of the function does not collide with those
     # of classes, that inherit from this class. Otherwise this
@@ -69,7 +69,7 @@ class CockpitApp(app_manager.RyuApp):
         # Install default flow
         # I.e., forward all unmatched packets to controller
         self.program_flow(
-            dp, 
+            dp,
             parser.OFPMatch(), # match all packets
             [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER)],
             hard_timeout = 0, # no timeout

@@ -18,20 +18,20 @@ from termcolor import colored
 from monitor import Monitor, BpfBuilder
 
 def panic(*msg):
-    print ""
-    print "    " + colored("*"*20+" ERROR "+"*"*20, "white", "on_red")
+    print ("")
+    print ("    " + colored("*"*20+" ERROR "+"*"*20, "white", "on_red"))
     for m in msg:
-        print "    " + m
-    print "    " + colored("*"*47, "white", "on_red")
+        print ("    " + m)
+    print ("    " + colored("*"*47, "white", "on_red"))
     exit(1)
 
 
 def info(*msg):
-    print ""
-    print "    " + colored("*"*30, "white", "on_yellow")
+    print ("")
+    print ("    " + colored("*"*30, "white", "on_yellow"))
     for m in msg:
-        print "    " + m
-    print "    " + colored("*"*30, "white", "on_yellow")
+        print ("    " + m)
+    print ("    " + colored("*"*30, "white", "on_yellow"))
 
 TASK_FILE = None
 
@@ -40,19 +40,19 @@ if len(sys.argv) > 1:
 
     if "None.yaml" in SCENARIO_FILE:
         info("This task does not use the traffic generator.")
-        print ""
-        print "    Use the Mininet console (right screen, second window from the top)"
-        print "    to create your own traffic. Use the help command to display "
-        print "    the commands that are provided by Mininet."
+        print("")
+        print("    Use the Mininet console (right screen, second window from the top)")
+        print("    to create your own traffic. Use the help command to display ")
+        print("    the commands that are provided by Mininet.")
         while True:
             time.sleep(10) # don't return
 
     if SCENARIO_FILE == "BootDummy":
         info("There is currently no traffic scenario selected.")
-        print ""
-        print "    Select a taffic scenario (or create a new one) and add the"
-        print "    [#tm scenario=xxx] makro to start the scenario. Please contact your"
-        print "    supervisor if there are any problems!"
+        print("")
+        print("    Select a taffic scenario (or create a new one) and add the")
+        print("    [#tm scenario=xxx] makro to start the scenario. Please contact your")
+        print("    supervisor if there are any problems!")
         while True:
             time.sleep(10) # don't return
 
@@ -218,10 +218,10 @@ class NetworkOracle(object):
         switch_ifaces = dict()
         for n1, n2, _ in links:
             if n1 not in hosts:
-                if not switch_ifaces.has_key(n1): switch_ifaces[n1] = 0
+                if not n1 in switch_ifaces: switch_ifaces[n1] = 0
                 switch_ifaces[n1]+=1
             if n2 not in hosts:
-                if not switch_ifaces.has_key(n2): switch_ifaces[n2] = 0
+                if not n1 in switch_ifaces: switch_ifaces[n2] = 0
                 switch_ifaces[n2]+=1
             if n1 == hostname:
                 return n2+"-eth"+str(switch_ifaces[n2])
@@ -318,7 +318,7 @@ class TrafficProfile(object):
         cwd = self.oracle.get_cwd()
         self.profile_dir = os.path.join(cwd, "traffic_%s" % self.name)
         if not os.path.exists(self.profile_dir):
-            print ".. create profile directory for %s" % self.name
+            print(".. create profile directory for %s" % self.name)
             os.mkdir(self.profile_dir)
 
     def load_from_configfile(self, profile, path):
@@ -332,9 +332,9 @@ class TrafficProfile(object):
 
             # make sure that old and new config are the same
             # (by comparing the parameters)
-            for k,v in old_profile.iteritems():
+            for k,v in old_profile.items():
                 if not profile.get(k) == v:
-                    print ".. config has changed, reload"
+                    print(".. config has changed, reload")
                     need_reload = True
                     break;
 
@@ -355,7 +355,7 @@ class TrafficProfile(object):
 
         self.create_cfg_files(event_list)
         self.num_events = len(event_list)
-        #print "    events: %d" % self.num_events
+        #print("    events: %d" % self.num_events)
 
     def create_cfg_files(self, events):
         """
@@ -399,7 +399,7 @@ class TrafficProfile(object):
 
             # put ev into the list of parsed events
             t = ev.get("time")
-            if not self.events.has_key(t):
+            if not t in self.events:
                 self.events[t] = []
             self.events[t].append(config)
 
@@ -418,8 +418,8 @@ class TrafficProfile(object):
                     created += 1
                 time.sleep(0.05) #TODO Should be unnecessary
 
-        #print "    cfg files skipped: %d" % skipped
-        #print "    cfg files created: %d" % created
+        #print("    cfg files skipped: %d" % skipped)
+        #print("    cfg files created: %d" % created)
 
 
     def create_new(self, profile):
@@ -434,14 +434,14 @@ class TrafficProfile(object):
             choice_packets = params.get("choice_packets")
             choice_iat = params.get("choice_iat")
 
-            if params.has_key("ip_overrides"):
+            if "ip_overrides" in params:
                 ipovr = IPOverride(self.oracle, profile)
 
             for i in range(events):
                 time = random.randint(*time_range)
                 packets = random.choice(choice_packets)
 
-                if params.has_key("ip_overrides"):
+                if "ip_overrides" in params:
                     src_host, src_ip, dst_ip = ipovr.get()
                 else:
                     src_host = random.choice(self.oracle.get_senders())
@@ -537,7 +537,7 @@ class Scheduler(threading.Thread):
         self.oracle = oracle
 
         info("Load Scenario: " + os.path.basename(scenario_file).replace(".yaml", "").upper())
-        print ""
+        print("")
 
         # create working directory for the current scenario file
         cwd = oracle.get_cwd()
@@ -568,7 +568,7 @@ class Scheduler(threading.Thread):
     def evaluate_monitoring(self):
         res = dict()
 
-        for (net, m) in self.monitors.iteritems():
+        for (net, m) in self.monitors.items():
             b = BpfBuilder()
             b.include_src_subnets(net.recv_from_src)
             b.include_dst_subnets(net.recv_to_dst)
@@ -587,7 +587,7 @@ class Scheduler(threading.Thread):
         return res
 
     def run(self):
-        # print ".. initialize oracle"
+        # print(".. initialize oracle")
         self.initialize_oracle(SCENARIO_FILE)
 
         if not self.oracle:
@@ -611,7 +611,7 @@ class Scheduler(threading.Thread):
             p = defined_profiles.get(name, None)
 
             if not p:
-                print ".. WARN: traffic profile %s not found (skipped)" % name
+                print(".. WARN: traffic profile %s not found (skipped)" % name)
                 continue
 
             profile = TrafficProfile(self.oracle, p)
@@ -622,8 +622,8 @@ class Scheduler(threading.Thread):
                 evaluation = profile.evaluation
                 tolerance = profile.tolerance
 
-            for schedule_time, events in profile.events.iteritems():
-                if not schedule.has_key(schedule_time):
+            for schedule_time, events in profile.events.items():
+                if not schedule_time in schedule:
                    schedule[schedule_time] = []
                 schedule[schedule_time] += events
 
@@ -634,7 +634,7 @@ class Scheduler(threading.Thread):
         # Suppress evaluation of an empty traffic schedule
         if not schedule:
             self._update_task(None, [])
-            return 
+            return
 
         self.start_monitoring()
         time_index = 0
@@ -652,11 +652,11 @@ class Scheduler(threading.Thread):
         threads = []
 
         while schedule:
-            if schedule.has_key(time_index):
+            if time_index in schedule:
                 for event in schedule.get(time_index):
                     done += 1
                     msg = (".. [%(src_host)6s->%(dst_host)6s] %(src_ip)15s --> %(dst_ip)15s (%(packets)d pkts)" % event) + " | %d/%d" % (done, num_events)
-                    print colored(msg, "cyan")
+                    print(colored(msg, "cyan"))
                     thread = Sender(event)
                     thread.start()
                     threads.append(thread)
@@ -687,7 +687,7 @@ class Scheduler(threading.Thread):
         # for each destination host
         exp_recv = {
             host : int(packets * self.oracle.networks[host].packet_ratio)
-            for host, packets in exp_recv.iteritems()
+            for host, packets in exp_recv.items()
         }
 
         for thread in threads:
@@ -709,7 +709,7 @@ class Scheduler(threading.Thread):
             # progressive evaluation
             status = "success"
 
-            for host, expected in exp_recv.iteritems():
+            for host, expected in exp_recv.items():
                 if host not in stats:
                     continue
 
@@ -735,7 +735,7 @@ class Scheduler(threading.Thread):
             # strict evaluation
             status = "success"
 
-            for host, expected in exp_recv.iteritems():
+            for host, expected in exp_recv.items():
                 if host not in stats:
                     continue
 
@@ -751,17 +751,17 @@ class Scheduler(threading.Thread):
                     msg = err_unexp.format(rejected, host)
                     feedback.append(list(("red", msg)))
 
-        print ""
+        print("")
 
         for color, line in feedback:
-            print "   {:s}".format(colored(line, color))
+            print("   {:s}".format(colored(line, color)))
 
-        print ""
+        print("")
 
         if status == "success":
-            print "   Status:", colored("SUCCESS", "green")
+            print("   Status:", colored("SUCCESS", "green"))
         elif status == "failure":
-            print "   Status:", colored("FAILURE", "red")
+            print("   Status:", colored("FAILURE", "red"))
 
         self._update_task(status, feedback)
 
