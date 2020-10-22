@@ -11,6 +11,7 @@ echo 'export LC_CTYPE="en_US.UTF-8"' >> /home/vagrant/.bashrc
 sudo apt-get update -y
 sudo apt-get install -y --install-recommends \
 git \
+net-tools \
 libgraph-easy-perl \
 htop \
 iputils-ping \

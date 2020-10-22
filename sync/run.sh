@@ -7,7 +7,7 @@
 source lib.sh
 
 DEFAULT_APP="local/apps/src/demo.py"
-DEFAULT_SCENARIO="/vagrant_data/local/apps/scenarios/demo.yaml"
+DEFAULT_SCENARIO="$PWD/local/apps/scenarios/demo.yaml"
 
 #tmux kill-server
 log " + cleanup mininet"

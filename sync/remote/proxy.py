@@ -762,7 +762,7 @@ class Scheduler(threading.Thread):
             print("   Status:", colored("SUCCESS", "green"))
         elif status == "failure":
             print("   Status:", colored("FAILURE", "red"))
-
+ 
         self._update_task(status, feedback)
 
     def _update_task(self, status, errors):
@@ -774,7 +774,8 @@ class Scheduler(threading.Thread):
         with open(tmpfile, "w") as file:
             file.write(yaml.dump(dict(status = status, errors = errors)))
 
-        os.system("runuser -l %s -c '/vagrant_data/remote/script_restart_task.sh true %s %s'" % (os.environ["SUDO_USER"], TASK_FILE, tmpfile))
+        restart_task_path = os.path.join(os.getcwd(), "remote", "script_restart_task.sh")
+        os.system("runuser -l %s -c '%s true %s %s'" % (os.environ["SUDO_USER"], restart_task_path, TASK_FILE, tmpfile)) 
 
 if __name__ == '__main__':
     thread = Scheduler()
