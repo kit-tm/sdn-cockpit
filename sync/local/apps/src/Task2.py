@@ -15,14 +15,14 @@ from collections import namedtuple
 
 #tm task=learning2
 
-ETHERTYPES = {2048: "IPv4", 2054: "ARP"}
+ETHERTYPES = {2048: "IPv4", 2054: "ARP", 34525: "IPv6"}
 L4PROTO = {1: "ICMP", 4: "IP-in-IP", 6: "TCP", 17: "UDP"}
 
 ## Clear ARP cache
-##  --> h1 ip -s -s neigh flush all  
+##  --> h1 ip -s -s neigh flush all
 
 
-## TODO 0: use this class to store a dataset per host connected to the network
+## TODO 1: use this class to store a dataset per host connected to the network
 HostInfo = namedtuple("HostInfo", ["ip", "mac", "dp", "port"])
 #  Example:
 #    hostX = HostInfo("127.0.0.1", "00:00:00:00:00:01", dp, 99)
@@ -42,31 +42,31 @@ class LearningSwitch(CockpitApp):
         pkt.add_protocol(ethernet.ethernet(ethertype=ether_types.ETH_TYPE_ARP,
                                            dst=dst_mac,
                                            src=src_mac))
-                                           
+
         pkt.add_protocol(arp.arp(opcode=arp.ARP_REPLY,
                                  src_mac=src_mac,
                                  src_ip=src_ip,
                                  dst_mac=dst_mac,
                                  dst_ip=dst_ip))
-                                 
+
         return pkt
-         
-         
+
+
     def debug_output(self, dp, pkt, in_port):
         eth = pkt.get_protocol(ethernet.ethernet)
-        
+
         self.pkt_count[dp.id] += 1
-        
-        ## TODO 1: Enable some more logging?
+
+        ## TODO 2: Enable some more logging?
         ## Info: Packet-in / Ethernet packet
         print("/// [Switch {}]: PACKET-IN (#{}) on port: {}".format(dp.id, self.pkt_count[dp.id], in_port))
         print("      SRC: {}, DST: {} --> {}".format(eth.src, eth.dst, ETHERTYPES[eth.ethertype]))
-        
+
 #        ## Info: IP Packet
 #        if eth.ethertype == ether_types.ETH_TYPE_IP:
 #            ip_pkt = pkt.get_protocol(ipv4.ipv4)
 #            print("           {:17},      {:17} --> {}".format(ip_pkt.src, ip_pkt.dst, L4PROTO[ip_pkt.proto]))
-#            
+#
 #            ## Info: TCP Packet
 ##            if ip_pkt.proto == 6:
 ##                tcp_pkt = pkt.get_protocol(tcp.tcp)
@@ -75,7 +75,7 @@ class LearningSwitch(CockpitApp):
 #        if eth.ethertype == ether_types.ETH_TYPE_ARP:
 #            arp_pkt = pkt.get_protocol(arp.arp)
 #            print("  [ARP] SRC-MAC: {}, SRC-IP: {}; DST-MAC: {} DST-IP: {}".format(arp_pkt.src_mac, arp_pkt.src_ip, arp_pkt.dst_mac, arp_pkt.dst_ip))
-        
+
 #       # --> see https://osrg.github.io/ryu-book/en/html/packet_lib.html for more info
 
 
@@ -87,16 +87,16 @@ class LearningSwitch(CockpitApp):
         ## init (per-data path) variables
         self.pkt_count[dp.id] = 0
 
-        ## some debug output        
+        ## some debug output
         print("")
         print("")
         print("/// Switch connected. ID: {}".format(dp.id))
-        
+
         ## default "all to controller" flow
         match = parser.OFPMatch()
         action = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER)]
         self.program_flow(dp, match, action, priority=0, idle_timeout=0, hard_timeout=0)
-        
+
         ## --> see https://osrg.github.io/ryu-book/en/html/openflow_protocol.html for more match options,
 
 
@@ -117,14 +117,14 @@ class LearningSwitch(CockpitApp):
 
         self.debug_output(dp, pkt, in_port)
 
-        ## TODO 2: use ARP packets to learn about hosts
-        ## TODO 3: answer ARP requests, DO NOT forward or even broadcast them!
+        ## TODO 3: use ARP packets to learn about hosts
+        ## TODO 4: answer ARP requests, DO NOT forward or even broadcast them!
         if eth.ethertype == ether_types.ETH_TYPE_ARP:
             print("  --> TODO handle ARP")
-            
+
         elif eth.ethertype == ether_types.ETH_TYPE_IP:
-            ## TODO 4: Flood packets? Bad idea! Can't we reuse something for the learning switch task?
-            ## TODO 5: Some subtle details to keep in mind, if multiple SDN-switchs are in use.
+            ## TODO 5: Flood packets? Bad idea! Can't we reuse something for the learning switch task?
+            ## TODO 6: Some subtle details to keep in mind, if multiple SDN-switchs are in use.
 
             self.send_pkt(dp, data, port = ofproto.OFPP_FLOOD)
         else:

@@ -13,11 +13,11 @@ from netaddr import IPAddress, IPNetwork
 
 #tm task=learning
 
-ETHERTYPES = {2048: "IPv4", 2054: "ARP"}
+ETHERTYPES = {2048: "IPv4", 2054: "ARP", 34525: "IPv6"}
 L4PROTO = {1: "ICMP", 4: "IP-in-IP", 6: "TCP", 17: "UDP"}
 
 ## Clear ARP cache
-##  --> h1 ip -s -s neigh flush all  
+##  --> h1 ip -s -s neigh flush all
 
 
 ## TODO 1: What's going on? Get an overview over the code and analyze the situation.
@@ -38,19 +38,19 @@ class LearningSwitch(CockpitApp):
 
     def debug_output(self, dp, pkt, in_port):
         eth = pkt.get_protocol(ethernet.ethernet)
-        
+
         self.pkt_count[dp.id] += 1
-        
+
         ## TODO 2: Enable some more logging?
         ## Info: Packet-in / Ethernet packet
         print("/// [Switch {}]: PACKET-IN (#{}) on port: {}".format(dp.id, self.pkt_count[dp.id], in_port))
 #        print("      SRC: {}, DST: {} --> {}".format(eth.src, eth.dst, ETHERTYPES[eth.ethertype]))
-        
+
 #        ## Info: IP Packet
 #        if eth.ethertype == ether_types.ETH_TYPE_IP:
 #            ip_pkt = pkt.get_protocol(ipv4.ipv4)
 #            print("           {:17},      {:17} --> {}".format(ip_pkt.src, ip_pkt.dst, L4PROTO[ip_pkt.proto]))
-#            
+#
 #            ## Info: TCP Packet
 ##            if ip_pkt.proto == 6:
 ##                tcp_pkt = pkt.get_protocol(tcp.tcp)
@@ -59,7 +59,7 @@ class LearningSwitch(CockpitApp):
 #        if eth.ethertype == ether_types.ETH_TYPE_ARP:
 #            arp_pkt = pkt.get_protocol(arp.arp)
 #            print("  [ARP] SRC-MAC: {}, SRC-IP: {}; DST-MAC: {} DST-IP: {}".format(arp_pkt.src_mac, arp_pkt.src_ip, arp_pkt.dst_mac, arp_pkt.dst_ip))
-        
+
 #       # --> see https://osrg.github.io/ryu-book/en/html/packet_lib.html for more info
 
 
@@ -71,32 +71,32 @@ class LearningSwitch(CockpitApp):
         ## init (per-data path) variables
         self.MAC_TO_PORT[dp.id] = {}
         self.pkt_count[dp.id] = 0
-        
+
         ## Note: check example for syntax how-to.
         #self.example()
 
-        ## some debug output        
+        ## some debug output
         print("")
         print("")
         print("/// Switch connected. ID: {}".format(dp.id))
-        
+
         ## default "all to controller" flow
         match = parser.OFPMatch()
         action = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER)]
         self.program_flow(dp, match, action, priority=0, idle_timeout=0, hard_timeout=0)
-        
+
         ## Directly connect port 1 and 2 with proactive flow rules
         match = parser.OFPMatch(in_port=1)
         action = [parser.OFPActionOutput(2)]
         self.program_flow(dp, match, action, priority=100, idle_timeout=0, hard_timeout=0)
-        
+
         match = parser.OFPMatch(in_port=2)
         action = [parser.OFPActionOutput(1)]
         self.program_flow(dp, match, action, priority=100, idle_timeout=0, hard_timeout=0)
-        
+
         ## --> see https://osrg.github.io/ryu-book/en/html/openflow_protocol.html for more match options,
         ##       e.g.: action = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
-        
+
 
 
     ## When a new packet comes in at the controller -- "PACKET-IN"
@@ -123,21 +123,21 @@ class LearningSwitch(CockpitApp):
         else:
             print("  --> DROP PACKET")
 
-            
+
         ## TODO 4: Controller based switch. Learn MAC-->Port
         ## TODO 5: Push flow rules into the SDN-switch
-        
-        
+
+
     ## Example code
     def example(self, dp):
         self.MAC_TO_PORT[dp.id]["00:00:00:00:00:01"] = 99
-        
+
         try:
             port = self.MAC_TO_PORT[dp.id]["00:00:00:00:00:01"]
             print("port: {}".format(port))
-            
+
             port = self.MAC_TO_PORT[dp.id]["00:00:00:00:00:02"]
-            print("port: {}".format(port))            
+            print("port: {}".format(port))
         except KeyError as e:
             print("no port found!")
 

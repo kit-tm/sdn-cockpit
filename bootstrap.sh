@@ -27,7 +27,9 @@ sudo -H pip3 install ryu
 
 # Install mininet
 git clone https://github.com/mininet/mininet.git
-./mininet/util/install.sh -nfv
+pushd ./mininet/util
+./install.sh -nfv
+popd
 sudo cp ./mininet/util/m /usr/local/bin/
 
 # Update global profile
