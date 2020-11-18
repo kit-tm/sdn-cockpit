@@ -1,6 +1,6 @@
 from mininet.net import Mininet
 from mininet.cli import CLI
-from mininet.node import RemoteController
+from mininet.node import RemoteController, OVSSwitch
 from mininet.link import TCLink
 
 from termcolor import colored
@@ -58,7 +58,10 @@ if len(sys.argv) > 1:
     mn_hosts = dict()
     mn_objects = dict()
 
-    net = Mininet(link=TCLink, waitConnected=True)
+    net = Mininet(
+        link=TCLink,
+        switch=partial(OVSSwitch, protocols='OpenFlow10,OpenFlow13'),
+        waitConnected=True)
 
     net.addController('c0', controller=RemoteController, ip='127.0.0.1',
         port=6633)
