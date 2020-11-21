@@ -1,0 +1,239 @@
+# do not change this
+root:
+
+  # the name of the scenario
+  name: "security"
+
+  # a short description that can be printed to console
+  description: "Protect the internal network from unwanted access"
+
+  # link to a pdf with a more detailed description (if available)
+  pdf: "./security.pdf"
+
+  # working directory for this scenario
+  working_directory: "cwd/security1"
+
+  # specify the topology of the scenario
+  topology:
+
+    # the switches of the topology
+    switches:
+      - name: s1
+        dpid: 1
+        enabled: True
+
+    hosts:
+      - name: h1
+        ip: "11.0.0.1/8"
+      - name: l1
+        ip: "22.0.0.1/8"
+      - name: r1
+        ip: "33.0.0.1/8"
+      - name: m1
+        ip: "44.0.0.1/8"
+
+    links:
+      - [h1, s1, 1000]
+      - [l1, s1, 1000]
+      - [r1, s1, 1000]
+      - [m1, s1, 1000]
+
+  networks:
+    - name: "h1"
+      alias: "H1"
+      send_from_src:
+        - "11.0.0.0/8"
+      send_to_dst:
+        - "44.0.0.0/8"
+      recv_to_dst:
+        - "11.0.0.0/8"
+    - name: "l1"
+      alias: "L1"
+      packet_ratio: 0.25
+      send_from_src:
+        - "22.0.0.0/8"
+      send_to_dst:
+        - "11.0.0.0/8"
+        - "44.0.0.0/8"
+      recv_to_dst:
+        - "22.0.0.0/8"
+    - name: "r1"
+      alias: "R3"
+      packet_ratio: 0.4
+      send_from_src:
+        - "33.0.0.0/8"
+      send_to_dst:
+        - "11.0.0.0/8"
+        - "44.0.0.0/8"
+      recv_to_dst:
+        - "33.0.0.0/8"
+    - name: "m1"
+      alias: "M1"
+      packet_ratio: 0.0
+      recv_to_dst:
+        - "44.0.0.0/8"
+
+  # traffic generation
+  traffic:
+    # specify all the profiles that should be used (in parallel!)
+    use_profiles:
+      - default
+      - h1l1
+      - h1r1
+      - l1r1
+      - r1l1
+
+  # specify traffic profiles for this scenario
+  traffic_profiles:
+    #  the default profile
+    - name: default
+      # estimated runtime in seconds of this schedule in seconds
+      runtime: 1
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 3
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # evaluation schema: strict, progressive or disregard
+      evaluation: strict
+      # specify the parameters for the schedule
+      params:
+        # generate x events in total
+        events: 20
+        # randomly select time range for a event between [a,b]
+        time_range: [1,10]
+        # randomly select the amount of packets from the given array
+        choice_packets: [1000]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+    - name: h1l1
+      # estimated runtime of this schedule in seconds
+      runtime: 1
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 3
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # evaluation schema: strict, progressive or disregard
+      evaluation: strict
+      # specify the parameters for the schedule
+      params:
+        # generate x events in total
+        events: 5
+        # randomly select time range for a event between [a,b]
+        time_range: [1,2]
+        # randomly select the amount of packets from the given array
+        choice_packets: [1000]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+        # randomly choose a number of ip source addresses corresponding
+        # to the selected hosts and keep them fixed during event
+        # generation. Choose any of the destination addresses from the
+        # range associated with hosts in dst_hosts
+        ip_overrides:
+          count: 5
+          src_hosts: ["h1"]
+          dst_hosts: ["l1"]
+    - name: h1r1
+      # estimated runtime of this schedule in seconds
+      runtime: 1
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 3
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # evaluation schema: strict, progressive or disregard
+      evaluation: strict
+      # specify the parameters for the schedule
+      params:
+        # generate x events in total
+        events: 4
+        # randomly select time range for a event between [a,b]
+        time_range: [3,6]
+        # randomly select the amount of packets from the given array
+        choice_packets: [1000]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+        # randomly choose a number of ip source addresses corresponding
+        # to the selected hosts and keep them fixed during event
+        # generation. Choose any of the destination addresses from the
+        # range associated with hosts in dst_hosts
+        ip_overrides:
+          count: 4
+          src_hosts: ["h1"]
+          dst_hosts: ["r1"]
+    - name: l1r1
+      # estimated runtime of this schedule in seconds
+      runtime: 1
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 3
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # evaluation schema: strict, progressive or disregard
+      evaluation: strict
+      # specify the parameters for the schedule
+      params:
+        # generate x events in total
+        events: 6
+        # randomly select time range for a event between [a,b]
+        time_range: [3,4]
+        # randomly select the amount of packets from the given array
+        choice_packets: [1000]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+        # randomly choose a number of ip source addresses corresponding
+        # to the selected hosts and keep them fixed during event
+        # generation. Choose any of the destination addresses from the
+        # range associated with hosts in dst_hosts
+        ip_overrides:
+          count: 6
+          src_hosts: ["l1"]
+          dst_hosts: ["r1"]
+    - name: r1l1
+      # estimated runtime of this schedule in seconds
+      runtime: 1
+      # grace time in seconds before performing a traffic analysis
+      wait_for_analaysis: 3
+      # automatically create the schedule with the parameters specified
+      type: auto
+      # evaluation schema: strict, progressive or disregard
+      evaluation: strict
+      # specify the parameters for the schedule
+      params:
+        # generate x events in total
+        events: 15
+        # randomly select time range for a event between [a,b]
+        time_range: [5,6]
+        # randomly select the amount of packets from the given array
+        choice_packets: [1000]
+        # randomly select a inter arrival time from the given array
+        choice_iat: ["1us"]
+        # randomly select a priority from the given array
+        choice_priority: [1]
+        # randomly choose a number of ip source addresses corresponding
+        # to the selected hosts and keep them fixed during event
+        # generation. Choose any of the destination addresses from the
+        # range associated with hosts in dst_hosts
+        ip_overrides:
+          count: 15
+          src_hosts: ["r1"]
+          dst_hosts: ["l1"]
+
+  # more advanced traffic generation parameters
+  trafgen:
+
+    # Specifies the (random) ips that are used in the traffic generator.
+    # This is required for setting up the network oracle in
+    # the controller. The file is stored in the working directory of the
+    # scenario so this can be the same for all scenarios (no need to change).
+    deployment_file: "oracle/deployment.yaml"
+
+    # Artifical delay for udp streams. The first packet is
+    # sent immediatly and all other packets are sent after a timeout
+    # that can be specified with this variable.
+    udp_first_packet_delay: 0.5

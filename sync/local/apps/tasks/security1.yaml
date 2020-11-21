@@ -1,0 +1,14 @@
+task:
+  name: "Secure Gateway"
+  description: >
+    Implement the following rules:
+    Local System L1 and Remote System R1 may each exchange packets with H1.
+    Noone may send packets to M1.
+    L1 and R1 may not exchange packets.
+  scenario: "security1"
+  graph: |
+    [ S1 ] -- { start: east; label: 1 }  [ H1 ] { origin: S1; offset: 2,0; }
+    [ S1 ] -- { start: north; label: 2 } [ L1 ] { origin: S1; offset: 0,-2; }
+    [ S1 ] -- { start: west; label: 3 }  [ R1 ] { origin: S1; offset: -2,0; }
+    [ S1 ] -- { start: south; label: 4 }  [ M1 ] { origin: S1; offset: 0,2; }
+  examination: 1

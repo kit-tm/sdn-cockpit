@@ -15,13 +15,16 @@ net-tools \
 libgraph-easy-perl \
 htop \
 iputils-ping \
+arping \
 ncurses-term \
 netcat \
 netsniff-ng \
 python3 \
 python3-pip \
 tcpdump \
-tmux
+tmux \
+dos2unix
+# dos2unix is only here in case there is trouble with shared folders to windows
 
 sudo -H pip3 install ryu
 
@@ -31,6 +34,7 @@ pushd ./mininet/util
 ./install.sh -nfv
 popd
 sudo cp ./mininet/util/m /usr/local/bin/
+rm -rf ./mininet/
 
 # Update global profile
 echo 'export PATH=/vagrant_data/remote:$PATH' >> /etc/profile.d/vagrant_data.sh
