@@ -1,6 +1,9 @@
+# The sync folder ends up being mounted inside the vm, so its files should have lf line endings.
+sync/**    text=auto eol=lf
+
 *.sh        text eol=lf
-*.py        text eol=lf
-*.yaml      text eol=lf
+*.py        text
+*.yaml      text
 *.html      text
 
 *.png       binary
