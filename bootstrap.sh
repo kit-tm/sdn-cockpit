@@ -26,6 +26,11 @@ tmux \
 dos2unix
 # dos2unix is only here in case there is trouble with shared folders to windows
 
+# temporary entry: newer versions of eventlet break backwards compatibility,
+# so we install an older version for now. Should be removed as soon as ryu
+# is updated to use a newer version of eventlet
+sudo -H pip3 install eventlet==0.30.2
+
 sudo -H pip3 install ryu
 
 # Install mininet
