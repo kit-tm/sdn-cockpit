@@ -1,3 +1,5 @@
+**⚠️This repository contains the unmaintained version 1 of SDN-Cockpit. Version 2 can be found at https://git.scc.kit.edu/TM/SDNcockpit**
+
 # sdn-cockpit
 
 sdn-cockpit is an open-source teaching framework for Software-defined Networking (SDN) developed by the Institute of Telematics, Karlsruhe Insitute of Technology.
