@@ -1,4 +1,4 @@
-**⚠️This repository contains the unmaintained version 1 of SDN-Cockpit. Version 2 can be found at https://git.scc.kit.edu/TM/SDNcockpit**
+**⚠️This repository contains the unmaintained version 1 of SDN-Cockpit. Version 2 can be found at https://gitlab.kit.edu/kit/tm/telematics/sdncockpit**
 
 # sdn-cockpit
 
